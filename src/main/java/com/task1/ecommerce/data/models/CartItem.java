@@ -11,12 +11,13 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @Entity
-public class Item {
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
+    private Long orderId;
+    private Long productId;
     private Integer quantity;
+    private BigDecimal price;
 
 }

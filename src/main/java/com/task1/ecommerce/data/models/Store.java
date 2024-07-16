@@ -1,10 +1,10 @@
 package com.task1.ecommerce.data.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -15,9 +15,10 @@ public class Store {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private String companyName;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
+    private Long sellerId;
+    private String storeName;
+    private String storeDescription;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private List<Product> products;
+
 }

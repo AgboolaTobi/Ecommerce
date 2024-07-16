@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -16,7 +16,11 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(fetch = FetchType.EAGER,cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private List<Item> items = new ArrayList<>();
+    private Long buyerId;
+    private Long productId;
+    private Integer quantity;
+    private BigDecimal totalAmount;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private List<Product> products;
 
 }
