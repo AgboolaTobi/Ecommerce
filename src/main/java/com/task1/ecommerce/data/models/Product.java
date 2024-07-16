@@ -25,7 +25,7 @@ public class Product {
     private Integer quantity;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Category productCategory;
 
 

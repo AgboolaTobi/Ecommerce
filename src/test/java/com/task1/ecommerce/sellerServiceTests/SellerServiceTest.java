@@ -1,8 +1,11 @@
 package com.task1.ecommerce.sellerServiceTests;
 
 import com.task1.ecommerce.data.repositories.SellerRepository;
+import com.task1.ecommerce.dtos.requests.OpenMultipleSellerStoresRequest;
 import com.task1.ecommerce.dtos.requests.SellerRegistrationRequest;
+import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 import com.task1.ecommerce.services.SellerService;
 import org.junit.jupiter.api.Test;
@@ -11,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class SellerServiceTest {
@@ -32,5 +36,43 @@ public class SellerServiceTest {
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
         assertEquals(sellerRepository.count(), 1);
+    }
+
+    @Test
+    public void testThatMultipleSellersCanRegister() throws SellerRegistrationException {
+        SellerRegistrationRequest request = new SellerRegistrationRequest();
+        request.setEmail("tobi4tee@email.com");
+        request.setPassword("tob104@Me.");
+        request.setName("Agboola Tobi");
+        request.setStoreName("Grace Stores");
+        request.setStoreDescription("Your best place to get all kinds of laptops and phones...");
+
+        SellerRegistrationResponse response = sellerService.registerSeller(request);
+        assertThat(response).isNotNull();
+        assertEquals(sellerRepository.count(), 2);
+    }
+
+    @Test
+    public void testThatASellerCanHaveMultipleStores() throws SellerNotFoundException {
+        OpenMultipleSellerStoresRequest request = new OpenMultipleSellerStoresRequest();
+        request.setSellerEmail("tobi4tee@email.com");
+        request.setSellerId(2L);
+        request.setStoreName("HisGrace Pharmacy");
+        request.setStoreDescription("HisGrace Pharmacy sells all kinds of pharmaceutical drugs");
+        OpenMultipleSellerStoresResponse response = sellerService.openMoreStore(request);
+        assertThat(response).isNotNull();
+
+    }
+
+    @Test
+    public void testThatIfARegisteredSellerAttemptsToRegisterExceptionIsThrown(){
+        SellerRegistrationRequest request = new SellerRegistrationRequest();
+        request.setEmail("tobi4tee@email.com");
+        request.setPassword("tob104@Me.");
+        request.setName("Agboola Tobi");
+        request.setStoreName("Grace Stores");
+        request.setStoreDescription("Your best place to get all kinds of laptops and phones...");
+        assertThrows(SellerRegistrationException.class,()->sellerService.registerSeller(request));
+
     }
 }

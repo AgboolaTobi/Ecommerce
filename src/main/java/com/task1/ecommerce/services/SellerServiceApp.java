@@ -3,8 +3,11 @@ package com.task1.ecommerce.services;
 import com.task1.ecommerce.data.models.Seller;
 import com.task1.ecommerce.data.models.Store;
 import com.task1.ecommerce.data.repositories.SellerRepository;
+import com.task1.ecommerce.dtos.requests.OpenMultipleSellerStoresRequest;
 import com.task1.ecommerce.dtos.requests.SellerRegistrationRequest;
+import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,6 +19,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+
 public class SellerServiceApp implements SellerService{
 
     private final SellerRepository sellerRepository;
@@ -30,6 +34,44 @@ public class SellerServiceApp implements SellerService{
         sellerRepository.save(newSeller);
 
         return buildSellerRegistrationResponse(newSeller, sellerStore);
+    }
+
+    @Override
+    public OpenMultipleSellerStoresResponse openMoreStore(OpenMultipleSellerStoresRequest request) throws SellerNotFoundException {
+        Seller existingSeller = getRegisteredSeller(request);
+        List<Store> stores = existingSeller.getStores();
+
+        createAdditionalStore(request, existingSeller, stores);
+        sellerRepository.save(existingSeller);
+        return buildAdditionalStoreResponse();
+    }
+
+    @Override
+    public Seller findByEmail(String sellerEmail) {
+        return sellerRepository.findByEmail(sellerEmail);
+    }
+
+    private static OpenMultipleSellerStoresResponse buildAdditionalStoreResponse() {
+        OpenMultipleSellerStoresResponse response = new OpenMultipleSellerStoresResponse();
+        response.setMessage("Store successfully registered!");
+        return response;
+    }
+
+    private void createAdditionalStore(OpenMultipleSellerStoresRequest request, Seller existingSeller, List<Store> stores) {
+        Store newStore = new Store();
+        newStore.setStoreName(request.getStoreName());
+        newStore.setSellerId(existingSeller.getId());
+        newStore.setStoreDescription(request.getStoreDescription());
+        newStore.setStoreName(request.getStoreName());
+        stores.add(newStore);
+        existingSeller.setStores(stores);
+        storeService.save(stores);
+    }
+
+    private Seller getRegisteredSeller(OpenMultipleSellerStoresRequest request) throws SellerNotFoundException {
+        Seller existingSeller = sellerRepository.findByEmail(request.getSellerEmail());
+        if (existingSeller == null) throw new SellerNotFoundException("Invalid seller details...");
+        return existingSeller;
     }
 
     private static SellerRegistrationResponse buildSellerRegistrationResponse(Seller newSeller, Store sellerStore) {
