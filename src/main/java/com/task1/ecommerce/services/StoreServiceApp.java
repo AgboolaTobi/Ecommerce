@@ -16,4 +16,10 @@ public class StoreServiceApp implements StoreService{
     public void save(List<Store> stores) {
         storeRepository.saveAll(stores);
     }
+
+    @Override
+    public Store findById(Long storeId) {
+        return storeRepository.findById(storeId).orElse(null);
+
+    }
 }

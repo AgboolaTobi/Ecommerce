@@ -1,5 +1,6 @@
 package com.task1.ecommerce.services;
 
+import com.task1.ecommerce.data.models.Product;
 import com.task1.ecommerce.data.models.Seller;
 import com.task1.ecommerce.data.models.Store;
 import com.task1.ecommerce.data.repositories.SellerRepository;
@@ -86,9 +87,16 @@ public class SellerServiceApp implements SellerService{
         Store sellerStore = mapper.map(newSeller, Store.class);
         sellerStore.setStoreName(request.getStoreName());
         sellerStore.setSellerId(newSeller.getId());
+        createProductsInStore(sellerStore);
+
         stores.add(sellerStore);
         storeService.save(stores);
         return sellerStore;
+    }
+
+    private static void createProductsInStore(Store sellerStore) {
+        List<Product> products = new ArrayList<>();
+        sellerStore.setProducts(products);
     }
 
     private Seller createSeller(SellerRegistrationRequest request) {

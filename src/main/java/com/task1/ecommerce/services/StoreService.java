@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface StoreService {
     void save(List<Store> stores);
+
+    Store findById(Long storeId);
 }
