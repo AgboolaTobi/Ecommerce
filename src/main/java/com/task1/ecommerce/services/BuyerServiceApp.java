@@ -4,8 +4,10 @@ import com.task1.ecommerce.data.models.*;
 import com.task1.ecommerce.data.repositories.BuyerRepository;
 import com.task1.ecommerce.dtos.requests.AddToCartRequest;
 import com.task1.ecommerce.dtos.requests.BuyerRegistrationRequest;
+import com.task1.ecommerce.dtos.requests.OrderRequest;
 import com.task1.ecommerce.dtos.responses.AddToCartResponse;
 import com.task1.ecommerce.dtos.responses.BuyerRegistrationResponse;
+import com.task1.ecommerce.dtos.responses.OrderResponse;
 import com.task1.ecommerce.exceptions.BuyerExistException;
 import com.task1.ecommerce.exceptions.BuyerNotFoundException;
 import com.task1.ecommerce.exceptions.ProductNotFoundException;
@@ -32,8 +34,8 @@ public class BuyerServiceApp implements BuyerService{
         Buyer buyer = createBuyer(request);
         Cart cart = new Cart();
         List<BuyerOder> buyerOrders = new ArrayList<>();
-        cart.setBuyerId(buyer.getId());
         buyerRepository.save(buyer);
+        cart.setBuyerId(buyer.getId());
         cartService.save(cart);
         buyer.setBuyerOrders(buyerOrders);
         buyer.setCart(cart);
@@ -56,9 +58,6 @@ public class BuyerServiceApp implements BuyerService{
         Cart cart = existingBuyer.getCart();
         CartItem cartItem = cartItemService.findByProductIdAndId(existingProduct.getId(), cart.getId());
 
-
-
-
         if (cartItem != null)
             cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
 
@@ -74,7 +73,6 @@ public class BuyerServiceApp implements BuyerService{
         cartItemService.save(cartItem);
         cartService.save(cart);
 
-
         existingProduct.setQuantity(existingProduct.getQuantity() - request.getQuantity());
         productService.saveProduct(existingProduct);
 
@@ -88,6 +86,12 @@ public class BuyerServiceApp implements BuyerService{
         AddToCartResponse response = new AddToCartResponse();
         response.setResponse("Product successfully added to the cart");
         return response;
+    }
+
+    @Override
+    public OrderResponse makeOrder(OrderRequest request) throws BuyerNotFoundException {
+        Buyer existingBuyer = buyerRepository.findById(request.getBuyerId()).orElse(null);
+        if (existingBuyer== null) throw new BuyerNotFoundException("Invalid buyer details");
     }
 
     private static BuyerRegistrationResponse buildResponse() {

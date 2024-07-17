@@ -17,10 +17,11 @@ public class BuyerOder {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long buyerId;
-    private LocalDateTime orderDate;
     private String deliveryAddress;
     private String phoneNumber;
     private String amount;
+    private String preferredDeliveryDate;
+    private LocalDateTime orderDate;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
 }
