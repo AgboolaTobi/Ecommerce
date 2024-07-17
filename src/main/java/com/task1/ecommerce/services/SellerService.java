@@ -14,4 +14,6 @@ public interface SellerService {
     OpenMultipleSellerStoresResponse openMoreStore(OpenMultipleSellerStoresRequest request) throws SellerNotFoundException;
 
     Seller findByEmail(String sellerEmail);
+
+    void save(Seller existingSeller);
 }

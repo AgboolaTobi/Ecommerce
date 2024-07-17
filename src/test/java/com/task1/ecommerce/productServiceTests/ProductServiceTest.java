@@ -2,8 +2,11 @@ package com.task1.ecommerce.productServiceTests;
 
 import com.task1.ecommerce.data.models.Category;
 import com.task1.ecommerce.dtos.requests.AddProductRequest;
+import com.task1.ecommerce.dtos.requests.UpdateProductRequest;
 import com.task1.ecommerce.dtos.responses.AddProductResponse;
+import com.task1.ecommerce.dtos.responses.UpdateProductResponse;
 import com.task1.ecommerce.exceptions.ExistingProductException;
+import com.task1.ecommerce.exceptions.ProductNotFoundException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.StoreNotFoundException;
 import com.task1.ecommerce.services.ProductService;
@@ -79,11 +82,27 @@ public class ProductServiceTest {
         request.setCategory(Category.ACCESSORIES);
         request.setName("iphone15");
         request.setDescription("Apple phone brand");
-        request.setPrice(new BigDecimal(450000));
+        request.setPrice(BigDecimal.valueOf(450000));
         request.setQuantity(5);
         assertThrows(ExistingProductException.class,()->productService.addProduct(request));
     }
 
+    @Test
+    public void testThatASellerCanUpdateAnExistingProduct() throws StoreNotFoundException, ProductNotFoundException, SellerNotFoundException {
+        UpdateProductRequest request = new UpdateProductRequest();
+        request.setSellerEmail("tobi4tee@email.com");
+        request.setStoreId(2L);
+        request.setProductId(1L);
+        request.setProductName("iphone 15pro");
+        request.setProductDescription("Apple phone brand");
+        request.setProductPrice(BigDecimal.valueOf(520000));
+        request.setProductQuantity(10);
+        request.setCategory(Category.ACCESSORIES);
+
+        UpdateProductResponse response = productService.updateProduct(request);
+        assertThat(response).isNotNull();
+
+    }
 
 
 }

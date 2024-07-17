@@ -52,6 +52,11 @@ public class SellerServiceApp implements SellerService{
         return sellerRepository.findByEmail(sellerEmail);
     }
 
+    @Override
+    public void save(Seller existingSeller) {
+        sellerRepository.save(existingSeller);
+    }
+
     private static OpenMultipleSellerStoresResponse buildAdditionalStoreResponse() {
         OpenMultipleSellerStoresResponse response = new OpenMultipleSellerStoresResponse();
         response.setMessage("Store successfully registered!");

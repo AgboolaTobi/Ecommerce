@@ -20,7 +20,7 @@ public class Buyer {
     private String password;
     private String address;
     private String phoneNumber;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Cart cart;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<BuyerOder> buyerOrders;

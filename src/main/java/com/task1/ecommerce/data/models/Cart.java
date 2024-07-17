@@ -19,8 +19,8 @@ public class Cart {
     private Long buyerId;
     private Long productId;
     private Integer quantity;
-    private BigDecimal totalAmount;
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private List<Product> products;
+    private BigDecimal total;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
+    private List<CartItem> items;
 
 }

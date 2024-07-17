@@ -16,7 +16,7 @@ public class BuyerOder {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private Long customerId;
+    private Long buyerId;
     private LocalDateTime orderDate;
     private String deliveryAddress;
     private String phoneNumber;
