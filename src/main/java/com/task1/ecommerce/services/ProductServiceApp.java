@@ -52,7 +52,7 @@ public class ProductServiceApp implements ProductService{
         response.setMessage("You have successfully added " + newProduct.getName() + " with the following product details: " +
                 "Product name - " + newProduct.getName() + ", " +
                 "Product description - " + newProduct.getDescription() + ", " +
-                "Product price - " + newProduct.getPrice().toString() + ", " +
+                "Product price - N" + newProduct.getPrice().toString() + ", " +
                 "Product quantity - " + newProduct.getQuantity() + ".");
         return response;
 

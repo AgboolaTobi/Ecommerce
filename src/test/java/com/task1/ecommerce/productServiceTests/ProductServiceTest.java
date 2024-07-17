@@ -22,7 +22,8 @@ public class ProductServiceTest {
     private ProductService productService;
 
     @Test
-    public void testThatProductCanBeAddedToSellerStore() throws StoreNotFoundException, SellerNotFoundException, ExistingProductException {
+    public void testThatProductCanBeAddedToSellerStore() throws StoreNotFoundException,
+            SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
         request.setSellerEmail("tobi4tee@email.com");
         request.setStoreId(2L);
@@ -38,7 +39,8 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void testThatASellerCanAddMultipleProducts() throws StoreNotFoundException, SellerNotFoundException, ExistingProductException {
+    public void testThatASellerCanAddMultipleProducts() throws StoreNotFoundException,
+            SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
         request.setSellerEmail("tobi4tee@email.com");
         request.setStoreId(2L);
@@ -64,7 +66,8 @@ public class ProductServiceTest {
         request.setPrice(new BigDecimal(450000));
         request.setQuantity(5);
         assertThrows(ExistingProductException.class,()->productService.addProduct(request));
-
     }
+
+
 
 }
