@@ -15,7 +15,7 @@ public class CartItem {
     private Long id;
     private Integer quantity;
     private BigDecimal price;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
     private Cart cart;
     @ManyToOne
     private Product product;

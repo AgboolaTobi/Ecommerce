@@ -4,5 +4,6 @@ public enum Category {
     GROCERIES,
     ACCESSORIES,
     ELECTRONICS,
-    CLOTHING,
+    FOODS_ITEMS,
+    PHARMACY_ITEMS
 }

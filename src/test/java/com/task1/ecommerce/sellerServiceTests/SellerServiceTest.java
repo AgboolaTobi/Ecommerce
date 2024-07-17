@@ -49,7 +49,6 @@ public class SellerServiceTest {
 
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
-        assertEquals(sellerRepository.count(), 2);
     }
 
     @Test

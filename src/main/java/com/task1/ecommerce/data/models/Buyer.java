@@ -22,6 +22,6 @@ public class Buyer {
     private String phoneNumber;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Cart cart;
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     private List<BuyerOder> buyerOrders;
 }

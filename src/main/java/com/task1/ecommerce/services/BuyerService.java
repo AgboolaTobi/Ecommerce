@@ -8,6 +8,7 @@ import com.task1.ecommerce.dtos.responses.BuyerRegistrationResponse;
 import com.task1.ecommerce.dtos.responses.OrderResponse;
 import com.task1.ecommerce.exceptions.BuyerExistException;
 import com.task1.ecommerce.exceptions.BuyerNotFoundException;
+import com.task1.ecommerce.exceptions.EmptyCartException;
 import com.task1.ecommerce.exceptions.ProductNotFoundException;
 
 public interface BuyerService {
@@ -16,5 +17,5 @@ public interface BuyerService {
 
     AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException, ProductNotFoundException;
 
-    OrderResponse makeOrder(OrderRequest request) throws BuyerNotFoundException;
+    OrderResponse makeOrder(OrderRequest request) throws BuyerNotFoundException, EmptyCartException;
 }

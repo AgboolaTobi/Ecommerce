@@ -8,6 +8,7 @@ import com.task1.ecommerce.dtos.responses.BuyerRegistrationResponse;
 import com.task1.ecommerce.dtos.responses.OrderResponse;
 import com.task1.ecommerce.exceptions.BuyerExistException;
 import com.task1.ecommerce.exceptions.BuyerNotFoundException;
+import com.task1.ecommerce.exceptions.EmptyCartException;
 import com.task1.ecommerce.exceptions.ProductNotFoundException;
 import com.task1.ecommerce.services.BuyerService;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,18 @@ public class BuyerServiceTest {
     }
 
     @Test
-    public void testThatABuyerCanMakeAnOrder(){
+    public void testThatABuyerCanAddMultipleProductsToCart() throws BuyerNotFoundException, ProductNotFoundException {
+        AddToCartRequest request = new AddToCartRequest();
+        request.setBuyerId(1L);
+        request.setProductId(2L);
+        request.setQuantity(1);
+
+        AddToCartResponse response = buyerService.addProductToCart(request);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void testThatABuyerCanMakeAnOrder() throws BuyerNotFoundException, EmptyCartException {
         OrderRequest request = new OrderRequest();
         request.setBuyerId(1L);
         request.setDeliveryAddress("312, Sabo,Yaba,Lagos");

@@ -29,12 +29,12 @@ public class ProductServiceTest {
             SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
         request.setSellerEmail("tobi4tee@email.com");
-        request.setStoreId(2L);
+        request.setStoreId(1L);
         request.setCategory(Category.ACCESSORIES);
         request.setName("iphone15");
         request.setDescription("Apple phone brand");
         request.setPrice(new BigDecimal(450000));
-        request.setQuantity(15);
+        request.setQuantity(8);
 
         AddProductResponse response = productService.addProduct(request);
         System.out.println(response);
@@ -47,11 +47,11 @@ public class ProductServiceTest {
         AddProductRequest request = new AddProductRequest();
         request.setSellerEmail("tobi4tee@email.com");
         request.setStoreId(2L);
-        request.setCategory(Category.ACCESSORIES);
-        request.setName("Dell Laptops");
-        request.setDescription("Foreign used Dell laptops");
-        request.setPrice(new BigDecimal(280000));
-        request.setQuantity(12);
+        request.setCategory(Category.PHARMACY_ITEMS);
+        request.setName("Antibiotics");
+        request.setDescription("Antibiotics for all age group. Different brands in stock");
+        request.setPrice(new BigDecimal(2500));
+        request.setQuantity(55);
         AddProductResponse response = productService.addProduct(request);
         System.out.println(response);
         assertThat(response).isNotNull();
