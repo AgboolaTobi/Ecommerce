@@ -54,6 +54,22 @@ public class ProductServiceTest {
         assertThat(response).isNotNull();
     }
 
+    @Test
+    public void testThatMultipleSellersCanAddTheSameProductToTheirStore() throws StoreNotFoundException, ExistingProductException, SellerNotFoundException {
+        AddProductRequest request = new AddProductRequest();
+        request.setSellerEmail("test@email.com");
+        request.setStoreId(1L);
+        request.setCategory(Category.ACCESSORIES);
+        request.setName("Dell Laptops");
+        request.setDescription("Foreign used Dell laptops");
+        request.setPrice(new BigDecimal(280000));
+        request.setQuantity(7);
+        AddProductResponse response = productService.addProduct(request);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+
+    }
+
 
     @Test
     public void testThatWhenASellerAttemptsToAddAnAlreadyExistingProductToStoreExceptionISThrown(){
