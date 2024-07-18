@@ -1,5 +1,6 @@
 package com.task1.ecommerce.services;
 
+import com.task1.ecommerce.data.models.Buyer;
 import com.task1.ecommerce.dtos.requests.AddToCartRequest;
 import com.task1.ecommerce.dtos.requests.BuyerRegistrationRequest;
 import com.task1.ecommerce.dtos.requests.OrderRequest;
@@ -12,10 +13,15 @@ import com.task1.ecommerce.exceptions.EmptyCartException;
 import com.task1.ecommerce.exceptions.ProductNotFoundException;
 
 public interface BuyerService {
+
     BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException;
 
 
     AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException, ProductNotFoundException;
 
     OrderResponse makeOrder(OrderRequest request) throws BuyerNotFoundException, EmptyCartException;
+
+    Buyer findByBuyerId(Long buyerId);
+
+    void save(Buyer existingBuyer);
 }

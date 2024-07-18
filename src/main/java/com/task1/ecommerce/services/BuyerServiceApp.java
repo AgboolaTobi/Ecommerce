@@ -74,6 +74,7 @@ public class BuyerServiceApp implements BuyerService{
             BigDecimal newPrice = cartItem.getPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
             cartItem.setQuantity(newQuantity);
             cartItem.setPrice(newPrice);
+            cartItem.setProduct(cartItem.getProduct());
             cartItemService.save(cartItem);
         } else {
 
@@ -164,6 +165,16 @@ public class BuyerServiceApp implements BuyerService{
         OrderResponse response = new OrderResponse();
         response.setMessage("Order successfully made");
         return response;
+    }
+
+    @Override
+    public Buyer findByBuyerId(Long buyerId) {
+        return buyerRepository.findById(buyerId).orElse(null);
+    }
+
+    @Override
+    public void save(Buyer existingBuyer) {
+        buyerRepository.save(existingBuyer);
     }
 
 

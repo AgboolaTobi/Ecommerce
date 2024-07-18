@@ -24,4 +24,7 @@ public class Buyer {
     private Cart cart;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     private List<BuyerOder> buyerOrders;
+
+    @OneToMany(fetch= FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Payment> payments;
 }

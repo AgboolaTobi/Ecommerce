@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -16,11 +16,12 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long buyerId;
     private Long orderId;
     private BigDecimal amount;
-    private String description;
-    private LocalDate paymentDate;
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private BuyerOder buyerOder;
+    private LocalDateTime paymentDate;
+
+//    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+//    private BuyerOder buyerOder;
 
 }

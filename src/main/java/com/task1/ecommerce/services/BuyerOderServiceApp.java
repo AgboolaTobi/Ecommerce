@@ -14,4 +14,9 @@ public class BuyerOderServiceApp implements BuyerOrderService{
     public void save(BuyerOder buyerOrder) {
         buyerOrderRepository.save(buyerOrder);
     }
+
+    @Override
+    public BuyerOder findById(Long orderId) {
+        return buyerOrderRepository.findById(orderId).orElse(null);
+    }
 }
