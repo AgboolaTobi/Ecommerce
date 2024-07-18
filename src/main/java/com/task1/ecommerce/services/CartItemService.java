@@ -2,12 +2,12 @@ package com.task1.ecommerce.services;
 
 import com.task1.ecommerce.data.models.CartItem;
 
+import java.util.List;
 
 
 public interface CartItemService {
 
-
-    CartItem findByProductIdAndId(Long id, Long cartId);
-
     void save(CartItem cartItem);
+
+    List<CartItem> findByProductId(Long id);
 }

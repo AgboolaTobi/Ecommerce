@@ -37,63 +37,90 @@ public class BuyerServiceApp implements BuyerService{
         if (isRegistered) throw new BuyerExistException("Registration details already taken");
         Buyer buyer = createBuyer(request);
         Cart cart = new Cart();
+        cart.setTotalQuantity(0);
+        cart.setTotalPrice(BigDecimal.valueOf(0));
         List<BuyerOder> buyerOrders = new ArrayList<>();
         buyerRepository.save(buyer);
         cart.setBuyerId(buyer.getId());
+
+
         cartService.save(cart);
         buyer.setBuyerOrders(buyerOrders);
         buyer.setCart(cart);
         buyerRepository.save(buyer);
 
         return buildResponse();
-    }
 
+
+
+    }
 
     @Override
     public AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException, ProductNotFoundException {
-        Buyer existingBuyer = buyerRepository.findById(request.getBuyerId()).orElse(null);
-        if (existingBuyer==null) throw new BuyerNotFoundException("Invalid user details");
-
-        Product existingProduct = productService.getProductById(request.getProductId());
-        if (existingProduct==null) throw new ProductNotFoundException("Product is unavailable at the moment");
-
-        if (existingProduct.getQuantity() < request.getQuantity()) throw new ProductNotFoundException("The required quantity of product is unavailable at the moment. You can only request for " + existingProduct.getQuantity()
-                + " ,or less at the moment. Thanks for your understanding");
+        Buyer existingBuyer = existingBuyer(request);
+        Product existingProduct = existingProduct(request);
+        checkQuantity(request, existingProduct);
         Cart cart = existingBuyer.getCart();
 
-        List<CartItem> items = existingBuyer.getCart().getItems();
-        CartItem cartItem = cartItemService.findByProductIdAndId(existingProduct.getId(), cart.getId());
 
-        if (cartItem != null)
-            cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
+        List<CartItem> existingCartItems = cartItemService.findByProductId(existingProduct.getId());
 
-        else cartItem = new CartItem();
-        cartItem.setProduct(existingProduct);
-        cartItem.setQuantity(request.getQuantity());
-        cartItem.setCart(cart);
-        cartItem.setPrice(existingProduct.getPrice());
-        items.add(cartItem);
-        cart.setItems(items);
-        cart.setProductId(request.getProductId());
-        cart.setBuyerId(existingBuyer.getId());
-        cart.setQuantity(cart.getQuantity());
+        CartItem cartItem;
+        if (!existingCartItems.isEmpty()) {
 
-        cartItemService.save(cartItem);
+            cartItem = existingCartItems.get(0);
+            int newQuantity = cartItem.getQuantity() + request.getQuantity();
+            BigDecimal newPrice = cartItem.getPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+            cartItem.setQuantity(newQuantity);
+            cartItem.setPrice(newPrice);
+            cartItemService.save(cartItem);
+        } else {
+
+            cartItem = new CartItem();
+            cartItem.setBuyerId(existingBuyer.getId());
+            cartItem.setProduct(existingProduct);
+            cartItem.setQuantity(request.getQuantity());
+            cartItem.setCart(cart);
+            cartItem.setPrice(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+            cartItemService.save(cartItem);
+        }
+
+        // Update cart totals
+        cart.setTotalQuantity(cart.getTotalQuantity() + request.getQuantity());
+        cart.setTotalPrice(cart.getTotalPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))));
+
         cartService.save(cart);
 
         existingProduct.setQuantity(existingProduct.getQuantity() - request.getQuantity());
         productService.saveProduct(existingProduct);
 
-        BigDecimal total = BigDecimal.ZERO;
-        for (CartItem item : cart.getItems()) {
-            total = total.add(item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())));
-        }
-        cart.setTotal(total);
-        cartService.save(cart);
+        return buildAddToCartResponse();
+    }
 
+
+
+    private static AddToCartResponse buildAddToCartResponse() {
         AddToCartResponse response = new AddToCartResponse();
         response.setResponse("Product successfully added to the cart");
         return response;
+    }
+
+    private static void checkQuantity(AddToCartRequest request, Product existingProduct) throws ProductNotFoundException {
+        if (existingProduct.getQuantity() < request.getQuantity()) throw new ProductNotFoundException("The required quantity of product is unavailable at the moment. You can only request for "
+                + existingProduct.getQuantity()
+                + " ,or less at the moment. Thanks for your understanding");
+    }
+
+    private Product existingProduct(AddToCartRequest request) throws ProductNotFoundException {
+        Product existingProduct = productService.getProductById(request.getProductId());
+        if (existingProduct==null) throw new ProductNotFoundException("Product is unavailable at the moment");
+        return existingProduct;
+    }
+
+    private Buyer existingBuyer(AddToCartRequest request) throws BuyerNotFoundException {
+        Buyer existingBuyer = buyerRepository.findById(request.getBuyerId()).orElse(null);
+        if (existingBuyer==null) throw new BuyerNotFoundException("Invalid user details");
+        return existingBuyer;
     }
 
     @Override
@@ -111,7 +138,7 @@ public class BuyerServiceApp implements BuyerService{
 
         BuyerOder buyerOrder = new BuyerOder();
         buyerOrder.setBuyerId(request.getBuyerId());
-        buyerOrder.setAmount(cart.getTotal());
+        buyerOrder.setAmount(cart.getTotalPrice());
         buyerOrder.setDeliveryAddress(request.getDeliveryAddress());
         buyerOrder.setPhoneNumber(request.getPhoneNumber());
         buyerOrder.setPreferredDeliveryDate(request.getPreferredDeliveryDate());
@@ -142,6 +169,7 @@ public class BuyerServiceApp implements BuyerService{
         Buyer buyer = new Buyer();
         buyer.setEmail(request.getEmail());
         buyer.setName(request.getName());
+        buyer.setPassword(request.getPassword());
         buyer.setAddress(request.getAddress());
         buyer.setPhoneNumber(request.getPhoneNumber());
         return buyer;

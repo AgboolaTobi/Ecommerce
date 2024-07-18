@@ -5,6 +5,8 @@ import com.task1.ecommerce.data.repositories.CartItemRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -14,12 +16,12 @@ public class CartItemServiceApp implements CartItemService{
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public CartItem findByProductIdAndId(Long id, Long cartId) {
-        return cartItemRepository.findByProductIdAndId(id, cartId);
+    public void save(CartItem cartItem) {
+        cartItemRepository.save(cartItem);
     }
 
     @Override
-    public void save(CartItem cartItem) {
-        cartItemRepository.save(cartItem);
+    public List<CartItem> findByProductId(Long id) {
+        return new ArrayList<>(cartItemRepository.findAll());
     }
 }

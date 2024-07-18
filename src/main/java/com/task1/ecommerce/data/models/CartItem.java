@@ -13,6 +13,7 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long buyerId;
     private Integer quantity;
     private BigDecimal price;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)

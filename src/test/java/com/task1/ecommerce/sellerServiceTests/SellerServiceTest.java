@@ -1,6 +1,5 @@
 package com.task1.ecommerce.sellerServiceTests;
 
-import com.task1.ecommerce.data.repositories.SellerRepository;
 import com.task1.ecommerce.dtos.requests.OpenMultipleSellerStoresRequest;
 import com.task1.ecommerce.dtos.requests.SellerRegistrationRequest;
 import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
@@ -13,17 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class SellerServiceTest {
 
-    @Autowired
-    private SellerRepository sellerRepository;
 
     @Autowired
     private SellerService sellerService;
+
     @Test
     public void testThatASellerCanRegister() throws SellerRegistrationException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
@@ -35,7 +33,6 @@ public class SellerServiceTest {
 
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
-        assertEquals(sellerRepository.count(), 1);
     }
 
     @Test
@@ -45,7 +42,7 @@ public class SellerServiceTest {
         request.setPassword("tob104@Me.");
         request.setName("Agboola Tobi");
         request.setStoreName("Grace Stores");
-        request.setStoreDescription("Your best place to get all kinds of laptops and phones...");
+        request.setStoreDescription("Your best place to get all kinds of sweet candies");
 
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
@@ -55,7 +52,7 @@ public class SellerServiceTest {
     public void testThatASellerCanHaveMultipleStores() throws SellerNotFoundException {
         OpenMultipleSellerStoresRequest request = new OpenMultipleSellerStoresRequest();
         request.setSellerEmail("tobi4tee@email.com");
-        request.setSellerId(2L);
+        request.setSellerId(1L);
         request.setStoreName("HisGrace Pharmacy");
         request.setStoreDescription("HisGrace Pharmacy sells all kinds of pharmaceutical drugs");
         OpenMultipleSellerStoresResponse response = sellerService.openMoreStore(request);

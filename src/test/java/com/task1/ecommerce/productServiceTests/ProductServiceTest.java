@@ -30,11 +30,11 @@ public class ProductServiceTest {
         AddProductRequest request = new AddProductRequest();
         request.setSellerEmail("tobi4tee@email.com");
         request.setStoreId(1L);
-        request.setCategory(Category.ACCESSORIES);
-        request.setName("iphone15");
-        request.setDescription("Apple phone brand");
-        request.setPrice(new BigDecimal(450000));
-        request.setQuantity(8);
+        request.setCategory(Category.CANDIES);
+        request.setName("Sweets");
+        request.setDescription("Creamy sweets for all ages...");
+        request.setPrice(new BigDecimal(100));
+        request.setQuantity(25);
 
         AddProductResponse response = productService.addProduct(request);
         System.out.println(response);
@@ -50,7 +50,7 @@ public class ProductServiceTest {
         request.setCategory(Category.PHARMACY_ITEMS);
         request.setName("Antibiotics");
         request.setDescription("Antibiotics for all age group. Different brands in stock");
-        request.setPrice(new BigDecimal(2500));
+        request.setPrice(new BigDecimal(500));
         request.setQuantity(55);
         AddProductResponse response = productService.addProduct(request);
         System.out.println(response);

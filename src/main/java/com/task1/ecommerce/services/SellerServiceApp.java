@@ -91,6 +91,7 @@ public class SellerServiceApp implements SellerService{
 
         Store sellerStore = mapper.map(newSeller, Store.class);
         sellerStore.setStoreName(request.getStoreName());
+        sellerStore.setStoreDescription(request.getStoreDescription());
         sellerStore.setSellerId(newSeller.getId());
         createProductsInStore(sellerStore);
 
@@ -106,7 +107,6 @@ public class SellerServiceApp implements SellerService{
 
     private Seller createSeller(SellerRegistrationRequest request) {
         Seller newSeller = mapper.map(request, Seller.class);
-        newSeller.setStoreName(request.getStoreName());
         newSeller.setCreatedAt(LocalDate.now());
         sellerRepository.save(newSeller);
         return newSeller;

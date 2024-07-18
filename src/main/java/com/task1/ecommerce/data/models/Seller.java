@@ -19,8 +19,6 @@ public class Seller {
     private String name;
     private String email;
     private String password;
-    private String storeName;
-    private String storeDescription;
     private LocalDate createdAt;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Store> stores;

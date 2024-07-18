@@ -17,9 +17,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long buyerId;
-    private Long productId;
-    private Integer quantity;
-    private BigDecimal total;
+    private Integer totalQuantity;
+    private BigDecimal totalPrice;
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
     private List<CartItem> items;
 
