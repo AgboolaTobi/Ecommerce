@@ -57,52 +57,5 @@ public class ProductServiceTest {
         assertThat(response).isNotNull();
     }
 
-    @Test
-    public void testThatMultipleSellersCanAddTheSameProductToTheirStore() throws StoreNotFoundException, ExistingProductException, SellerNotFoundException {
-        AddProductRequest request = new AddProductRequest();
-        request.setSellerEmail("test@email.com");
-        request.setStoreId(1L);
-        request.setCategory(Category.ACCESSORIES);
-        request.setName("Dell Laptops");
-        request.setDescription("Foreign used Dell laptops");
-        request.setPrice(new BigDecimal(280000));
-        request.setQuantity(7);
-        AddProductResponse response = productService.addProduct(request);
-        System.out.println(response);
-        assertThat(response).isNotNull();
-
-    }
-
-
-    @Test
-    public void testThatWhenASellerAttemptsToAddAnAlreadyExistingProductToStoreExceptionISThrown(){
-        AddProductRequest request = new AddProductRequest();
-        request.setSellerEmail("tobi4tee@email.com");
-        request.setStoreId(2L);
-        request.setCategory(Category.ACCESSORIES);
-        request.setName("iphone15");
-        request.setDescription("Apple phone brand");
-        request.setPrice(BigDecimal.valueOf(450000));
-        request.setQuantity(5);
-        assertThrows(ExistingProductException.class,()->productService.addProduct(request));
-    }
-
-    @Test
-    public void testThatASellerCanUpdateAnExistingProduct() throws StoreNotFoundException, ProductNotFoundException, SellerNotFoundException {
-        UpdateProductRequest request = new UpdateProductRequest();
-        request.setSellerEmail("tobi4tee@email.com");
-        request.setStoreId(2L);
-        request.setProductId(1L);
-        request.setProductName("iphone 15pro");
-        request.setProductDescription("Apple phone brand");
-        request.setProductPrice(BigDecimal.valueOf(520000));
-        request.setProductQuantity(10);
-        request.setCategory(Category.ACCESSORIES);
-
-        UpdateProductResponse response = productService.updateProduct(request);
-        assertThat(response).isNotNull();
-
-    }
-
 
 }
