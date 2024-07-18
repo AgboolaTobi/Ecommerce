@@ -1,7 +1,6 @@
 package com.task1.ecommerce.services;
 
 import com.task1.ecommerce.data.models.*;
-import com.task1.ecommerce.data.repositories.BuyerOrderRepository;
 import com.task1.ecommerce.data.repositories.BuyerRepository;
 import com.task1.ecommerce.dtos.requests.AddToCartRequest;
 import com.task1.ecommerce.dtos.requests.BuyerRegistrationRequest;
@@ -28,7 +27,7 @@ public class BuyerServiceApp implements BuyerService{
     private final CartService cartService;
     private final ProductService productService;
     private final CartItemService cartItemService;
-    private final BuyerOrderRepository buyerOrderRepository;
+    private final BuyerOrderService buyerOrderService;
 
     @Override
     public BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException {
@@ -63,6 +62,8 @@ public class BuyerServiceApp implements BuyerService{
         Cart cart = existingBuyer.getCart();
 
 
+        List<CartItem> buyersItems = cart.getItems();
+
         List<CartItem> existingCartItems = cartItemService.findByProductId(existingProduct.getId());
 
         CartItem cartItem;
@@ -85,14 +86,21 @@ public class BuyerServiceApp implements BuyerService{
             cartItemService.save(cartItem);
         }
 
+        buyersItems.add(cartItem);
+
         // Update cart totals
+        cart.setItems(buyersItems);
         cart.setTotalQuantity(cart.getTotalQuantity() + request.getQuantity());
         cart.setTotalPrice(cart.getTotalPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))));
 
         cartService.save(cart);
 
+
         existingProduct.setQuantity(existingProduct.getQuantity() - request.getQuantity());
         productService.saveProduct(existingProduct);
+
+        existingBuyer.setCart(cart);
+        buyerRepository.save(existingBuyer);
 
         return buildAddToCartResponse();
     }
@@ -133,8 +141,7 @@ public class BuyerServiceApp implements BuyerService{
         Cart cart = existingBuyer.getCart();
         List<CartItem> items = cart.getItems();
 
-        if (items.isEmpty())
-            throw new EmptyCartException("Cart is empty");
+        if (items.isEmpty()) throw new EmptyCartException("Cart is empty");
 
         BuyerOder buyerOrder = new BuyerOder();
         buyerOrder.setBuyerId(request.getBuyerId());
@@ -144,13 +151,14 @@ public class BuyerServiceApp implements BuyerService{
         buyerOrder.setPreferredDeliveryDate(request.getPreferredDeliveryDate());
         buyerOrder.setOrderDate(LocalDateTime.now());
 
-        buyerOrderRepository.save(buyerOrder);
-
-        buyerOrder.setCartItems(items);
+        buyerOrderService.save(buyerOrder);
 
         List<BuyerOder> buyerOrders = existingBuyer.getBuyerOrders();
         buyerOrders.add(buyerOrder);
         existingBuyer.setBuyerOrders(buyerOrders);
+        buyerRepository.save(existingBuyer);
+
+        existingBuyer.setCart(cart);
         buyerRepository.save(existingBuyer);
 
         OrderResponse response = new OrderResponse();

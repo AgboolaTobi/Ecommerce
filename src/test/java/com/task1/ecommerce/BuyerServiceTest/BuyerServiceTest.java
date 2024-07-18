@@ -60,6 +60,32 @@ public class BuyerServiceTest {
         assertThat(response).isNotNull();
     }
 
+
+    @Test
+    public void testThatARegisteredBuyerCanAddTheSameProductToCartMultipleTimes() throws BuyerNotFoundException, ProductNotFoundException {
+        AddToCartRequest request = new AddToCartRequest();
+        request.setBuyerId(1L);
+        request.setProductId(1L);
+        request.setQuantity(3);
+
+        AddToCartResponse response = buyerService.addProductToCart(request);
+        assertThat(response).isNotNull();
+    }
+
+
+    @Test
+    public void testThatABuyerCanAddMultipleProductsToCart() throws BuyerNotFoundException, ProductNotFoundException {
+        AddToCartRequest request = new AddToCartRequest();
+        request.setBuyerId(1L);
+        request.setProductId(2L);
+        request.setQuantity(1);
+
+        AddToCartResponse response = buyerService.addProductToCart(request);
+        assertThat(response).isNotNull();
+    }
+
+
+
     @Test
     public void testThatMultipleRegisteredBuyersCanAddProductToCart() throws BuyerNotFoundException, ProductNotFoundException {
         AddToCartRequest request = new AddToCartRequest();
@@ -75,30 +101,6 @@ public class BuyerServiceTest {
     public void testThatMultipleRegisteredBuyersCanAddMultipleProductsToCart() throws BuyerNotFoundException, ProductNotFoundException {
         AddToCartRequest request = new AddToCartRequest();
         request.setBuyerId(2L);
-        request.setProductId(2L);
-        request.setQuantity(1);
-
-        AddToCartResponse response = buyerService.addProductToCart(request);
-        assertThat(response).isNotNull();
-    }
-
-
-
-    @Test
-    public void testThatARegisteredBuyerCanAddTheSameProductToCartMultipleTimes2() throws BuyerNotFoundException, ProductNotFoundException {
-        AddToCartRequest request = new AddToCartRequest();
-        request.setBuyerId(1L);
-        request.setProductId(1L);
-        request.setQuantity(3);
-
-        AddToCartResponse response = buyerService.addProductToCart(request);
-        assertThat(response).isNotNull();
-    }
-
-    @Test
-    public void testThatABuyerCanAddMultipleProductsToCart() throws BuyerNotFoundException, ProductNotFoundException {
-        AddToCartRequest request = new AddToCartRequest();
-        request.setBuyerId(1L);
         request.setProductId(2L);
         request.setQuantity(1);
 
