@@ -9,11 +9,12 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 
 public interface SellerService {
-    SellerRegistrationResponse registerSeller(SellerRegistrationRequest request) throws SellerRegistrationException;
+    SellerRegistrationResponse registerSeller(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException;
 
     OpenMultipleSellerStoresResponse openMoreStore(OpenMultipleSellerStoresRequest request) throws SellerNotFoundException;
 

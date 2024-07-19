@@ -8,6 +8,7 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 import com.task1.ecommerce.services.SellerService;
@@ -17,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -28,7 +28,7 @@ public class SellerServiceTest {
     private SellerService sellerService;
 
     @Test
-    public void testThatASellerCanRegister() throws SellerRegistrationException {
+    public void testThatASellerCanRegister() throws SellerRegistrationException, InvalidPhoneNumberException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
         request.setEmail("test@email.com");
         request.setPassword("password");
@@ -42,7 +42,7 @@ public class SellerServiceTest {
 
 
     @Test
-    public void testThatMultipleSellersCanRegister() throws SellerRegistrationException {
+    public void testThatMultipleSellersCanRegister() throws SellerRegistrationException, InvalidPhoneNumberException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
         request.setEmail("tobi4tee@email.com");
         request.setPassword("tob104@Me.");
@@ -52,6 +52,39 @@ public class SellerServiceTest {
 
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void tesThatAttemptToRegisterWithAnInvalidEmailFormatThrowsException(){
+        SellerRegistrationRequest request = new SellerRegistrationRequest();
+        request.setEmail("tobi4teeemail.com");
+        request.setPassword("tob104@Me.");
+        request.setName("Agboola Tobi");
+        request.setStoreName("Grace Stores");
+        request.setStoreDescription("Your best place to get all kinds of sweet candies");
+        assertThrows(SellerRegistrationException.class, ()->sellerService.registerSeller(request));
+    }
+
+    @Test
+    public void testThatAttemptToRegisterWithAnInvalidPasswordFormatThrowsException(){
+        SellerRegistrationRequest request = new SellerRegistrationRequest();
+        request.setEmail("tobi4tee@email.com");
+        request.setPassword("tobi");
+        request.setName("Agboola Tobi");
+        request.setStoreName("Grace Stores");
+        request.setStoreDescription("Your best place to get all kinds of sweet candies");
+        assertThrows(SellerRegistrationException.class, ()->sellerService.registerSeller(request));
+    }
+
+    @Test
+    public void testThatAttemptToRegisterWithAnInvalidNameFormatThrowsException(){
+        SellerRegistrationRequest request = new SellerRegistrationRequest();
+        request.setEmail("tobi4tee@email.com");
+        request.setPassword("tob104@Me.");
+        request.setName("345736 453353");
+        request.setStoreName("Grace Stores");
+        request.setStoreDescription("Your best place to get all kinds of sweet candies");
+        assertThrows(SellerRegistrationException.class, ()->sellerService.registerSeller(request));
     }
 
     @Test
@@ -72,7 +105,6 @@ public class SellerServiceTest {
         SellerLogoutResponse response = sellerService.logout(request);
 
         assertThat(response).isNotNull();
-
 
     }
 

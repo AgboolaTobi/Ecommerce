@@ -1,12 +1,11 @@
 package com.task1.ecommerce.controllers;
 
 
-import com.task1.ecommerce.dtos.requests.AddProductRequest;
 import com.task1.ecommerce.dtos.requests.OpenMultipleSellerStoresRequest;
 import com.task1.ecommerce.dtos.requests.SellerRegistrationRequest;
-import com.task1.ecommerce.dtos.responses.AddProductResponse;
 import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 import com.task1.ecommerce.services.SellerService;
@@ -28,7 +27,7 @@ public class SellerController {
 
 
     @PostMapping("register")
-    public ResponseEntity<SellerRegistrationResponse> registerSeller(@RequestBody SellerRegistrationRequest request) throws SellerRegistrationException {
+    public ResponseEntity<SellerRegistrationResponse> registerSeller(@RequestBody SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
         return new ResponseEntity<>(sellerService.registerSeller(request), HttpStatus.CREATED);
     }
 
