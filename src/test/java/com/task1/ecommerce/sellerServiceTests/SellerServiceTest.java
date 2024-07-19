@@ -1,8 +1,12 @@
 package com.task1.ecommerce.sellerServiceTests;
 
 import com.task1.ecommerce.dtos.requests.OpenMultipleSellerStoresRequest;
+import com.task1.ecommerce.dtos.requests.SellerLoginRequest;
+import com.task1.ecommerce.dtos.requests.SellerLogoutRequest;
 import com.task1.ecommerce.dtos.requests.SellerRegistrationRequest;
 import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
+import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
+import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
@@ -13,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -35,6 +40,7 @@ public class SellerServiceTest {
         assertThat(response).isNotNull();
     }
 
+
     @Test
     public void testThatMultipleSellersCanRegister() throws SellerRegistrationException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
@@ -46,6 +52,28 @@ public class SellerServiceTest {
 
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void testThatARegisteredSellerCanLogin() throws SellerNotFoundException {
+        SellerLoginRequest request = new SellerLoginRequest();
+        request.setEmail("tobi4tee@email.com");
+        request.setPassword("tob104@Me.");
+
+        SellerLoginResponse response = sellerService.login(request);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void testThatSellerCanLogout() throws SellerNotFoundException {
+
+        SellerLogoutRequest request = new SellerLogoutRequest();
+        request.setSellerId(1L);
+        SellerLogoutResponse response = sellerService.logout(request);
+
+        assertThat(response).isNotNull();
+
+
     }
 
     @Test

@@ -5,11 +5,17 @@ import com.task1.ecommerce.data.models.Seller;
 import com.task1.ecommerce.data.models.Store;
 import com.task1.ecommerce.data.repositories.SellerRepository;
 import com.task1.ecommerce.dtos.requests.OpenMultipleSellerStoresRequest;
+import com.task1.ecommerce.dtos.requests.SellerLoginRequest;
+import com.task1.ecommerce.dtos.requests.SellerLogoutRequest;
 import com.task1.ecommerce.dtos.requests.SellerRegistrationRequest;
 import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
+import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
+import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
+import com.task1.ecommerce.utils.Verification;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,6 +32,7 @@ public class SellerServiceApp implements SellerService{
     private final SellerRepository sellerRepository;
     private final ModelMapper mapper;
     private final StoreService storeService;
+    private final Verification verification;
 
     @Override
     public SellerRegistrationResponse registerSeller(SellerRegistrationRequest request) throws SellerRegistrationException {
@@ -55,6 +62,43 @@ public class SellerServiceApp implements SellerService{
     @Override
     public void save(Seller existingSeller) {
         sellerRepository.save(existingSeller);
+    }
+
+    @Override
+    public SellerLoginResponse login(SellerLoginRequest request) throws SellerNotFoundException {
+        Seller existingSeller = validateCredentials(request);
+        existingSeller.setLogin(true);
+        sellerRepository.save(existingSeller);
+        return buildLoginResponse(existingSeller);
+    }
+
+    @Override
+    public SellerLogoutResponse logout(SellerLogoutRequest request) throws SellerNotFoundException {
+        Seller existingSeller = sellerRepository.getSellerById(request.getSellerId());
+        if (existingSeller == null)throw new SellerNotFoundException("Seller not found");
+
+        existingSeller.setLogin(false);
+        sellerRepository.save(existingSeller);
+
+        SellerLogoutResponse response = new SellerLogoutResponse();
+        response.setMessage("Successfully logged out");
+        return response;
+
+
+    }
+
+    private SellerLoginResponse buildLoginResponse(Seller existingSeller) {
+        SellerLoginResponse response = mapper.map(existingSeller, SellerLoginResponse.class);
+        response.setMessage("Successfully logged in");
+        return response;
+    }
+
+    private Seller validateCredentials(SellerLoginRequest request) throws SellerNotFoundException {
+        Seller existingSeller = sellerRepository.findByEmail(request.getEmail());
+        if (existingSeller == null) throw new SellerNotFoundException("Invalid login credentials: " + request.getEmail());
+
+        if (!existingSeller.getPassword().equals(request.getPassword())) throw new SellerNotFoundException("Invalid login credentials: " + request.getEmail());
+        return existingSeller;
     }
 
     private static OpenMultipleSellerStoresResponse buildAdditionalStoreResponse() {
@@ -105,11 +149,28 @@ public class SellerServiceApp implements SellerService{
         sellerStore.setProducts(products);
     }
 
-    private Seller createSeller(SellerRegistrationRequest request) {
+    private Seller createSeller(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
+        verifyDetails(request);
         Seller newSeller = mapper.map(request, Seller.class);
         newSeller.setCreatedAt(LocalDate.now());
         sellerRepository.save(newSeller);
         return newSeller;
+    }
+
+
+
+
+    private static void verifyDetails(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
+        if (!Verification.verifyEmail(request.getEmail())) throw new SellerRegistrationException("Invalid email format. Format should follow abdc@gmail.com format" + request.getEmail());
+        if (!Verification.verifyPhoneNumber(request.getPassword())) throw new SellerRegistrationException("""
+                1. Phone number should contain a 11 numbers(numbers only)
+                2. No whitespaces in-between the numbers
+                """);
+        if (!Verification.verifyPassword(request.getPassword())) throw new SellerRegistrationException("""
+                Invalid password format:
+                1. Password must start with an uppercase
+                2. Password must contain a special character
+                """);
     }
 
     private void checkIfRegistered(SellerRegistrationRequest request) throws SellerRegistrationException {

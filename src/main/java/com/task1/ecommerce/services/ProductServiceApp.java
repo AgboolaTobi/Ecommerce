@@ -5,8 +5,12 @@ import com.task1.ecommerce.data.models.Seller;
 import com.task1.ecommerce.data.models.Store;
 import com.task1.ecommerce.data.repositories.ProductRepository;
 import com.task1.ecommerce.dtos.requests.AddProductRequest;
+import com.task1.ecommerce.dtos.requests.SearchForProductByCategoryRequest;
+import com.task1.ecommerce.dtos.requests.SearchForProductRequest;
 import com.task1.ecommerce.dtos.requests.UpdateProductRequest;
 import com.task1.ecommerce.dtos.responses.AddProductResponse;
+import com.task1.ecommerce.dtos.responses.SearchForProductByCategoryResponse;
+import com.task1.ecommerce.dtos.responses.SearchForProductResponse;
 import com.task1.ecommerce.dtos.responses.UpdateProductResponse;
 import com.task1.ecommerce.exceptions.ExistingProductException;
 import com.task1.ecommerce.exceptions.ProductNotFoundException;
@@ -65,6 +69,29 @@ public class ProductServiceApp implements ProductService{
     @Override
     public void saveProduct(Product existingProduct) {
         productRepository.save(existingProduct);
+    }
+
+    @Override
+    public SearchForProductResponse getProductByProductName(SearchForProductRequest request) {
+
+        List<Product> products = productRepository.getProductByName(request.getName());
+
+        SearchForProductResponse response = new SearchForProductResponse();
+        response.setProducts(products);
+
+        return response;
+
+    }
+
+    @Override
+    public SearchForProductByCategoryResponse getProductByCategory(SearchForProductByCategoryRequest request) {
+
+        List<Product> products = productRepository.getByProductCategory(request.getProductCategory());
+
+        SearchForProductByCategoryResponse response = new SearchForProductByCategoryResponse();
+        response.setProducts(products);
+        return response;
+
     }
 
     private static UpdateProductResponse buildProductUpdateResponse(Product targetProduct) {

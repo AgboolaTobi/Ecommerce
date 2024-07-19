@@ -20,6 +20,7 @@ public class Buyer {
     private String password;
     private String address;
     private String phoneNumber;
+    private boolean isLogin;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Cart cart;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)

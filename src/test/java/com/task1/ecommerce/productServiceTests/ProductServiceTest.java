@@ -2,11 +2,12 @@ package com.task1.ecommerce.productServiceTests;
 
 import com.task1.ecommerce.data.models.Category;
 import com.task1.ecommerce.dtos.requests.AddProductRequest;
-import com.task1.ecommerce.dtos.requests.UpdateProductRequest;
+import com.task1.ecommerce.dtos.requests.SearchForProductByCategoryRequest;
+import com.task1.ecommerce.dtos.requests.SearchForProductRequest;
 import com.task1.ecommerce.dtos.responses.AddProductResponse;
-import com.task1.ecommerce.dtos.responses.UpdateProductResponse;
+import com.task1.ecommerce.dtos.responses.SearchForProductByCategoryResponse;
+import com.task1.ecommerce.dtos.responses.SearchForProductResponse;
 import com.task1.ecommerce.exceptions.ExistingProductException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.StoreNotFoundException;
 import com.task1.ecommerce.services.ProductService;
@@ -57,5 +58,27 @@ public class ProductServiceTest {
         assertThat(response).isNotNull();
     }
 
+    @Test
+    public void testThatAProductCanBeFoundByProductName(){
+
+        SearchForProductRequest request = new SearchForProductRequest();
+
+        request.setName("Antibiotics");
+        SearchForProductResponse response = productService.getProductByProductName(request);
+
+        assertThat(response).isNotNull();
+
+    }
+
+    @Test
+    public void testThatProductsCanBeFoundByCategory(){
+
+        SearchForProductByCategoryRequest request = new SearchForProductByCategoryRequest();
+        request.setProductCategory(Category.CANDIES);
+
+        SearchForProductByCategoryResponse response = productService.getProductByCategory(request);
+        assertThat(response).isNotNull();
+
+    }
 
 }
