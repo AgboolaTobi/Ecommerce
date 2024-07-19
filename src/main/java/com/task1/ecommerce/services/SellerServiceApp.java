@@ -64,7 +64,7 @@ public class SellerServiceApp implements SellerService{
     }
 
     @Override
-    public SellerLoginResponse login(SellerLoginRequest request) throws SellerNotFoundException {
+    public SellerLoginResponse sellerLogin(SellerLoginRequest request) throws SellerNotFoundException {
         Seller existingSeller = validateCredentials(request);
         existingSeller.setLogin(true);
         sellerRepository.save(existingSeller);
@@ -72,7 +72,7 @@ public class SellerServiceApp implements SellerService{
     }
 
     @Override
-    public SellerLogoutResponse logout(SellerLogoutRequest request) throws SellerNotFoundException {
+    public SellerLogoutResponse sellerLogout(SellerLogoutRequest request) throws SellerNotFoundException {
         Seller existingSeller = sellerRepository.getSellerById(request.getSellerId());
         if (existingSeller == null)throw new SellerNotFoundException("Seller not found");
 

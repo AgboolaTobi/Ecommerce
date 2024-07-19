@@ -2,16 +2,10 @@ package com.task1.ecommerce.services;
 
 import com.task1.ecommerce.data.models.*;
 import com.task1.ecommerce.data.repositories.BuyerRepository;
-import com.task1.ecommerce.dtos.requests.AddToCartRequest;
-import com.task1.ecommerce.dtos.requests.BuyerRegistrationRequest;
-import com.task1.ecommerce.dtos.requests.OrderRequest;
-import com.task1.ecommerce.dtos.responses.AddToCartResponse;
-import com.task1.ecommerce.dtos.responses.BuyerRegistrationResponse;
-import com.task1.ecommerce.dtos.responses.OrderResponse;
-import com.task1.ecommerce.exceptions.BuyerExistException;
-import com.task1.ecommerce.exceptions.BuyerNotFoundException;
-import com.task1.ecommerce.exceptions.EmptyCartException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
+import com.task1.ecommerce.dtos.requests.*;
+import com.task1.ecommerce.dtos.responses.*;
+import com.task1.ecommerce.exceptions.*;
+import com.task1.ecommerce.utils.Verification;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +24,7 @@ public class BuyerServiceApp implements BuyerService{
     private final BuyerOrderService buyerOrderService;
 
     @Override
-    public BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException {
+    public BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException, BuyerRegistrationException {
 
         boolean isRegistered = buyerRepository.findByEmail(request.getEmail())!=null;
         if (isRegistered) throw new BuyerExistException("Registration details already taken");
@@ -177,6 +171,43 @@ public class BuyerServiceApp implements BuyerService{
         buyerRepository.save(existingBuyer);
     }
 
+    @Override
+    public BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException {
+        Buyer existingBuyer = buyerRepository.findByEmail(request.getEmail());
+        validateCredentials(request, existingBuyer);
+        existingBuyer.setLogin(true);
+        buyerRepository.save(existingBuyer);
+        return buildLoginResponse();
+
+    }
+
+    @Override
+    public BuyerLogoutResponse logoutBuyer(BuyerLogoutRequest request) throws BuyerNotFoundException {
+        Buyer existingBuyer = buyerRepository.findById(request.getId()).orElse(null);
+        if (existingBuyer == null)throw new BuyerNotFoundException("Invalid logout credentials: " + request.getId());
+        existingBuyer.setLogin(false);
+        buyerRepository.save(existingBuyer);
+
+        return buildBuyerLogoutResponse();
+    }
+
+    private static BuyerLogoutResponse buildBuyerLogoutResponse() {
+        BuyerLogoutResponse response = new BuyerLogoutResponse();
+        response.setMessage("Logout successful");
+        return response;
+    }
+
+    private static BuyerLoginResponse buildLoginResponse() {
+        BuyerLoginResponse response = new BuyerLoginResponse();
+        response.setMessage("Login successful");
+        return response;
+    }
+
+    private static void validateCredentials(BuyerLoginRequest request, Buyer existingBuyer) throws BuyerNotFoundException {
+        if (existingBuyer == null)throw new BuyerNotFoundException("Invalid login credential: " + request.getEmail());
+        if (!existingBuyer.getPassword().equals(request.getPassword())) throw new BuyerNotFoundException("Invalid login credential" + request.getPassword());
+    }
+
 
     private static BuyerRegistrationResponse buildResponse() {
         BuyerRegistrationResponse response = new BuyerRegistrationResponse();
@@ -184,7 +215,10 @@ public class BuyerServiceApp implements BuyerService{
         return response;
     }
 
-    private static Buyer createBuyer(BuyerRegistrationRequest request) {
+    private static Buyer createBuyer(BuyerRegistrationRequest request) throws BuyerRegistrationException {
+        if (!Verification.verifyEmail(request.getEmail())) throw new BuyerRegistrationException("Invalid email format: " + request.getEmail());
+        if (!Verification.verifyPassword(request.getPassword())) throw new BuyerRegistrationException("Invalid password format: " + request.getPassword());
+        if (!Verification.verifyName(request.getName())) throw new BuyerRegistrationException("Invalid name format: " + request.getName());
         Buyer buyer = new Buyer();
         buyer.setEmail(request.getEmail());
         buyer.setName(request.getName());

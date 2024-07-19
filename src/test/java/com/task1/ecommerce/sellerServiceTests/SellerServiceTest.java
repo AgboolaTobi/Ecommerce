@@ -88,12 +88,12 @@ public class SellerServiceTest {
     }
 
     @Test
-    public void testThatARegisteredSellerCanLogin() throws SellerNotFoundException {
+    public void testThatARegisteredSellerCanSellerLogin() throws SellerNotFoundException {
         SellerLoginRequest request = new SellerLoginRequest();
         request.setEmail("tobi4tee@email.com");
         request.setPassword("tob104@Me.");
 
-        SellerLoginResponse response = sellerService.login(request);
+        SellerLoginResponse response = sellerService.sellerLogin(request);
         assertThat(response).isNotNull();
     }
 
@@ -102,7 +102,7 @@ public class SellerServiceTest {
 
         SellerLogoutRequest request = new SellerLogoutRequest();
         request.setSellerId(1L);
-        SellerLogoutResponse response = sellerService.logout(request);
+        SellerLogoutResponse response = sellerService.sellerLogout(request);
 
         assertThat(response).isNotNull();
 

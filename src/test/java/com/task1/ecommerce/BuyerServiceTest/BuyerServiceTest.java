@@ -1,15 +1,7 @@
 package com.task1.ecommerce.BuyerServiceTest;
-
-import com.task1.ecommerce.dtos.requests.AddToCartRequest;
-import com.task1.ecommerce.dtos.requests.BuyerRegistrationRequest;
-import com.task1.ecommerce.dtos.requests.OrderRequest;
-import com.task1.ecommerce.dtos.responses.AddToCartResponse;
-import com.task1.ecommerce.dtos.responses.BuyerRegistrationResponse;
-import com.task1.ecommerce.dtos.responses.OrderResponse;
-import com.task1.ecommerce.exceptions.BuyerExistException;
-import com.task1.ecommerce.exceptions.BuyerNotFoundException;
-import com.task1.ecommerce.exceptions.EmptyCartException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
+import com.task1.ecommerce.dtos.requests.*;
+import com.task1.ecommerce.dtos.responses.*;
+import com.task1.ecommerce.exceptions.*;
 import com.task1.ecommerce.services.BuyerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +14,8 @@ public class BuyerServiceTest {
 
     @Autowired
     private BuyerService buyerService;
-
     @Test
-    public void testThatABuyerCanRegister() throws BuyerExistException {
+    public void testThatABuyerCanRegister() throws BuyerExistException, BuyerRegistrationException {
         BuyerRegistrationRequest request = new BuyerRegistrationRequest();
         request.setEmail("avia02@gmail.com");
         request.setName("Avia Agboola");
@@ -37,7 +28,28 @@ public class BuyerServiceTest {
     }
 
     @Test
-    public void testThatMultipleBuyersCanRegister() throws BuyerExistException {
+    public void testThatABuyerCanBuyerLogin() throws BuyerNotFoundException {
+        BuyerLoginRequest request = new BuyerLoginRequest();
+        request.setEmail("avia02@gmail.com");
+        request.setPassword("avia02");
+        BuyerLoginResponse response = buyerService.buyerLogin(request);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void testThatBuyerCanLogout() throws BuyerNotFoundException {
+        BuyerLogoutRequest request = new BuyerLogoutRequest();
+        request.setId(1L);
+        BuyerLogoutResponse response = buyerService.logoutBuyer(request);
+
+        assertThat(response).isNotNull();
+
+    }
+
+
+
+    @Test
+    public void testThatMultipleBuyersCanRegister() throws BuyerExistException, BuyerRegistrationException {
         BuyerRegistrationRequest request = new BuyerRegistrationRequest();
         request.setEmail("aduke05@gmail.com");
         request.setName("Aduke Agboola");

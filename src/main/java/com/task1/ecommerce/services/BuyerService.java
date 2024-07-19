@@ -1,20 +1,13 @@
 package com.task1.ecommerce.services;
 
 import com.task1.ecommerce.data.models.Buyer;
-import com.task1.ecommerce.dtos.requests.AddToCartRequest;
-import com.task1.ecommerce.dtos.requests.BuyerRegistrationRequest;
-import com.task1.ecommerce.dtos.requests.OrderRequest;
-import com.task1.ecommerce.dtos.responses.AddToCartResponse;
-import com.task1.ecommerce.dtos.responses.BuyerRegistrationResponse;
-import com.task1.ecommerce.dtos.responses.OrderResponse;
-import com.task1.ecommerce.exceptions.BuyerExistException;
-import com.task1.ecommerce.exceptions.BuyerNotFoundException;
-import com.task1.ecommerce.exceptions.EmptyCartException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
+import com.task1.ecommerce.dtos.requests.*;
+import com.task1.ecommerce.dtos.responses.*;
+import com.task1.ecommerce.exceptions.*;
 
 public interface BuyerService {
 
-    BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException;
+    BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException, BuyerRegistrationException;
 
 
     AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException, ProductNotFoundException;
@@ -24,4 +17,8 @@ public interface BuyerService {
     Buyer findByBuyerId(Long buyerId);
 
     void save(Buyer existingBuyer);
+
+    BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException;
+
+    BuyerLogoutResponse logoutBuyer(BuyerLogoutRequest request) throws BuyerNotFoundException;
 }

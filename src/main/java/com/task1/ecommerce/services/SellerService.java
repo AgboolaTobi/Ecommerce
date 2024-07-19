@@ -22,7 +22,7 @@ public interface SellerService {
 
     void save(Seller existingSeller);
 
-    SellerLoginResponse login(SellerLoginRequest request) throws SellerNotFoundException;
+    SellerLoginResponse sellerLogin(SellerLoginRequest request) throws SellerNotFoundException;
 
-    SellerLogoutResponse logout(SellerLogoutRequest request) throws SellerNotFoundException;
+    SellerLogoutResponse sellerLogout(SellerLogoutRequest request) throws SellerNotFoundException;
 }
