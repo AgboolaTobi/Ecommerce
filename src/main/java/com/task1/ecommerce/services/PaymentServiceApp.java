@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -65,7 +66,7 @@ public class PaymentServiceApp implements PaymentService{
         ResponseEntity<PayStackTransactionResponse> transactionResponseResponse =
                 template.postForEntity(config.getPayStackBaseUrl(),transactionRequest, PayStackTransactionResponse.class);
 
-        System.out.println(transactionResponseResponse.getBody().getTransactionDetails().getAuthorizationUrl());
+        System.out.println(Objects.requireNonNull(transactionResponseResponse.getBody()).getTransactionDetails().getAuthorizationUrl());
 
         return response;
 

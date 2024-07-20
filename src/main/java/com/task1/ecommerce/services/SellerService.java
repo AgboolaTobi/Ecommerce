@@ -9,6 +9,7 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidCredentialsException;
 import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
@@ -22,7 +23,7 @@ public interface SellerService {
 
     void save(Seller existingSeller);
 
-    SellerLoginResponse sellerLogin(SellerLoginRequest request) throws SellerNotFoundException;
+    SellerLoginResponse sellerLogin(SellerLoginRequest request) throws SellerNotFoundException, InvalidCredentialsException;
 
     SellerLogoutResponse sellerLogout(SellerLogoutRequest request) throws SellerNotFoundException;
 

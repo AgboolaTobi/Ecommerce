@@ -9,6 +9,7 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidCredentialsException;
 import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
@@ -36,7 +37,7 @@ public class SellerController {
     }
 
     @PostMapping("sellerLogin")
-    public ResponseEntity<SellerLoginResponse> sellerLogin(@RequestBody SellerLoginRequest request) throws SellerNotFoundException {
+    public ResponseEntity<SellerLoginResponse> sellerLogin(@RequestBody SellerLoginRequest request) throws InvalidCredentialsException, SellerNotFoundException {
         return new ResponseEntity<>(sellerService.sellerLogin(request), HttpStatus.OK);
     }
 

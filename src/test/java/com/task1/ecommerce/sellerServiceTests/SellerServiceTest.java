@@ -8,6 +8,7 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidCredentialsException;
 import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
@@ -44,9 +45,10 @@ public class SellerServiceTest {
     @Test
     public void testThatMultipleSellersCanRegister() throws SellerRegistrationException, InvalidPhoneNumberException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
-        request.setEmail("tobi4tee@email.com");
-        request.setPassword("tob104@Me.");
+        request.setEmail("tobi9tee@gmail.com");
+        request.setPassword("tobi4Me$");
         request.setName("Agboola Tobi");
+        request.setPhoneNumber("08139031085");
         request.setStoreName("Grace Stores");
         request.setStoreDescription("Your best place to get all kinds of sweet candies");
 
@@ -88,10 +90,10 @@ public class SellerServiceTest {
     }
 
     @Test
-    public void testThatARegisteredSellerCanSellerLogin() throws SellerNotFoundException {
+    public void testThatARegisteredSellerCanSellerLogin() throws SellerNotFoundException, InvalidCredentialsException {
         SellerLoginRequest request = new SellerLoginRequest();
-        request.setEmail("tobi4tee@email.com");
-        request.setPassword("tob104@Me.");
+        request.setEmail("tobi9tee@gmail.com");
+        request.setPassword("tobi4Me$");
 
         SellerLoginResponse response = sellerService.sellerLogin(request);
         assertThat(response).isNotNull();

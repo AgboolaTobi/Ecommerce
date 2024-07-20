@@ -12,10 +12,12 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
+import com.task1.ecommerce.exceptions.InvalidCredentialsException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 import com.task1.ecommerce.utils.Verification;
 import lombok.AllArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +65,7 @@ public class SellerServiceApp implements SellerService{
     }
 
     @Override
-    public SellerLoginResponse sellerLogin(SellerLoginRequest request) throws SellerNotFoundException {
+    public SellerLoginResponse sellerLogin(SellerLoginRequest request) throws InvalidCredentialsException {
         Seller existingSeller = validateCredentials(request);
         existingSeller.setLogin(true);
         sellerRepository.save(existingSeller);
@@ -96,11 +98,11 @@ public class SellerServiceApp implements SellerService{
         return response;
     }
 
-    private Seller validateCredentials(SellerLoginRequest request) throws SellerNotFoundException {
+    private Seller validateCredentials(SellerLoginRequest request) throws InvalidCredentialsException {
         Seller existingSeller = sellerRepository.findByEmail(request.getEmail());
-        if (existingSeller == null) throw new SellerNotFoundException("Invalid login credentials: " + request.getEmail());
-
-        if (!existingSeller.getPassword().equals(request.getPassword())) throw new SellerNotFoundException("Invalid login credentials: " + request.getEmail());
+        if (existingSeller == null) throw new InvalidCredentialsException("Invalid email or password");
+        boolean isValidPassword = BCrypt.checkpw(request.getPassword(), existingSeller.getPassword());
+        if (!isValidPassword) throw new InvalidCredentialsException("Invalid email or password");
         return existingSeller;
     }
 
@@ -155,10 +157,13 @@ public class SellerServiceApp implements SellerService{
     private Seller createSeller(SellerRegistrationRequest request) throws SellerRegistrationException {
         verifyDetails(request);
         Seller newSeller = mapper.map(request, Seller.class);
+        String hashedPassword = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
+        newSeller.setPassword(hashedPassword);
         newSeller.setCreatedAt(LocalDate.now());
         sellerRepository.save(newSeller);
         return newSeller;
     }
+
 
 
 
