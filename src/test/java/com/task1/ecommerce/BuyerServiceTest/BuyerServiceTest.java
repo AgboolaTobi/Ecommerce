@@ -17,10 +17,10 @@ public class BuyerServiceTest {
     @Test
     public void testThatABuyerCanRegister() throws BuyerExistException, BuyerRegistrationException {
         BuyerRegistrationRequest request = new BuyerRegistrationRequest();
-        request.setEmail("avia02@gmail.com");
+        request.setEmail("avia08@gmail.com");
         request.setName("Avia Agboola");
-        request.setPassword("avia02");
-        request.setPhoneNumber("+2348068952954");
+        request.setPassword("aviaAgboola14$");
+        request.setPhoneNumber("08068952954");
         request.setAddress("Jakande Estate,Ejigbo. Lagos");
 
         BuyerRegistrationResponse response = buyerService.registerBuyer(request);
@@ -28,10 +28,10 @@ public class BuyerServiceTest {
     }
 
     @Test
-    public void testThatABuyerCanBuyerLogin() throws BuyerNotFoundException {
+    public void testThatABuyerCanBuyerLogin() throws BuyerNotFoundException, InvalidCredentialsException {
         BuyerLoginRequest request = new BuyerLoginRequest();
-        request.setEmail("avia02@gmail.com");
-        request.setPassword("avia02");
+        request.setEmail("avia08@gmail.com");
+        request.setPassword("aviaAgboola14$");
         BuyerLoginResponse response = buyerService.buyerLogin(request);
         assertThat(response).isNotNull();
     }

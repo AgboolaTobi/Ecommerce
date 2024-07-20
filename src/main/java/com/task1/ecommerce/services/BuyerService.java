@@ -18,7 +18,7 @@ public interface BuyerService {
 
     void save(Buyer existingBuyer);
 
-    BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException;
+    BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException, InvalidCredentialsException;
 
     BuyerLogoutResponse logoutBuyer(BuyerLogoutRequest request) throws BuyerNotFoundException;
 }

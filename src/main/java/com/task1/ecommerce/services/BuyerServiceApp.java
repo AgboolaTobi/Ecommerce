@@ -7,6 +7,7 @@ import com.task1.ecommerce.dtos.responses.*;
 import com.task1.ecommerce.exceptions.*;
 import com.task1.ecommerce.utils.Verification;
 import lombok.AllArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -172,7 +173,7 @@ public class BuyerServiceApp implements BuyerService{
     }
 
     @Override
-    public BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException {
+    public BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException, InvalidCredentialsException {
         Buyer existingBuyer = buyerRepository.findByEmail(request.getEmail());
         validateCredentials(request, existingBuyer);
         existingBuyer.setLogin(true);
@@ -203,9 +204,10 @@ public class BuyerServiceApp implements BuyerService{
         return response;
     }
 
-    private static void validateCredentials(BuyerLoginRequest request, Buyer existingBuyer) throws BuyerNotFoundException {
-        if (existingBuyer == null)throw new BuyerNotFoundException("Invalid login credential: " + request.getEmail());
-        if (!existingBuyer.getPassword().equals(request.getPassword())) throw new BuyerNotFoundException("Invalid login credential" + request.getPassword());
+    private static void validateCredentials(BuyerLoginRequest request, Buyer existingBuyer) throws InvalidCredentialsException {
+        if (existingBuyer == null)throw new InvalidCredentialsException("Invalid email or password");
+        boolean isValidPassword = BCrypt.checkpw(request.getPassword(), existingBuyer.getPassword());
+        if (!isValidPassword) throw new InvalidCredentialsException("Invalid email or password");
     }
 
 
@@ -217,10 +219,13 @@ public class BuyerServiceApp implements BuyerService{
 
     private static Buyer createBuyer(BuyerRegistrationRequest request) throws BuyerRegistrationException {
         verifyDetails(request);
+
         Buyer buyer = new Buyer();
+
         buyer.setEmail(request.getEmail());
         buyer.setName(request.getName());
-        buyer.setPassword(request.getPassword());
+        String hashedPassword = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
+        buyer.setPassword(hashedPassword);
         buyer.setAddress(request.getAddress());
         buyer.setPhoneNumber(request.getPhoneNumber());
         buyer.setCreatedAt(LocalDateTime.now());
