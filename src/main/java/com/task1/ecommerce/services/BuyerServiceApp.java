@@ -173,7 +173,7 @@ public class BuyerServiceApp implements BuyerService{
     }
 
     @Override
-    public BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException, InvalidCredentialsException {
+    public BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws InvalidCredentialsException {
         Buyer existingBuyer = buyerRepository.findByEmail(request.getEmail());
         validateCredentials(request, existingBuyer);
         existingBuyer.setLogin(true);
