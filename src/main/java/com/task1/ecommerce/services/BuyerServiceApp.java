@@ -216,9 +216,7 @@ public class BuyerServiceApp implements BuyerService{
     }
 
     private static Buyer createBuyer(BuyerRegistrationRequest request) throws BuyerRegistrationException {
-        if (Verification.verifyRegistrationEmail(request.getEmail())) throw new BuyerRegistrationException("Invalid email format: " + request.getEmail());
-        if (Verification.verifyRegistrationPassword(request.getPassword())) throw new BuyerRegistrationException("Invalid password format: " + request.getPassword());
-        if (Verification.verifyRegistrationName(request.getName())) throw new BuyerRegistrationException("Invalid name format: " + request.getName());
+        verifyDetails(request);
         Buyer buyer = new Buyer();
         buyer.setEmail(request.getEmail());
         buyer.setName(request.getName());
@@ -226,5 +224,27 @@ public class BuyerServiceApp implements BuyerService{
         buyer.setAddress(request.getAddress());
         buyer.setPhoneNumber(request.getPhoneNumber());
         return buyer;
+    }
+
+    private static void verifyDetails(BuyerRegistrationRequest request) throws BuyerRegistrationException {
+        if (!Verification.verifyRegistrationEmail(request.getEmail())) throw new BuyerRegistrationException("Invalid email format. Email should be in the format of example@gmail.com");
+
+        if (!Verification.verifyRegistrationName(request.getName()))
+            throw new BuyerRegistrationException("Invalid name format: " + request.getName() + ". Name should contain letters and spaces only");
+
+        if (!Verification.verifyPhoneNumber(request.getPhoneNumber()))
+            throw new BuyerRegistrationException("Invalid phone number format. Phone number should contain 11 digits only, without whitespaces");
+
+        if (!Verification.verifyRegistrationPassword(request.getPassword()))
+            throw new BuyerRegistrationException(""" 
+            Invalid password format. Ensure password has:
+            - A minimum length of 8 characters and a maximum length of 16 characters
+            - No whitespaces
+            - A mix of:
+              - Lowercase letters (a-z)
+              - Uppercase letters (A-Z)
+              - Digits (0-9)
+              - Special characters (@, $, !, %, *, ?, &)
+        """);
     }
 }
