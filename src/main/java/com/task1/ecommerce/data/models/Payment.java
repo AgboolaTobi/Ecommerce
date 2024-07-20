@@ -20,8 +20,4 @@ public class Payment {
     private Long orderId;
     private BigDecimal amount;
     private LocalDateTime paymentDate;
-
-//    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-//    private BuyerOder buyerOder;
-
 }

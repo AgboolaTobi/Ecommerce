@@ -85,6 +85,11 @@ public class SellerServiceApp implements SellerService{
 
     }
 
+    @Override
+    public Seller findSellerbyId(Long sellerId) {
+        return sellerRepository.getSellerById(sellerId);
+    }
+
     private SellerLoginResponse buildLoginResponse(Seller existingSeller) {
         SellerLoginResponse response = mapper.map(existingSeller, SellerLoginResponse.class);
         response.setMessage("Successfully logged in");

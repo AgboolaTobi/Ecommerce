@@ -1,16 +1,20 @@
 package com.task1.ecommerce.productServiceTests;
 
 import com.task1.ecommerce.data.models.Category;
+import com.task1.ecommerce.dtos.requests.RemoveProductFromStoreRequest;
 import com.task1.ecommerce.dtos.requests.AddProductRequest;
 import com.task1.ecommerce.dtos.requests.SearchForProductByCategoryRequest;
 import com.task1.ecommerce.dtos.requests.SearchForProductRequest;
 import com.task1.ecommerce.dtos.responses.AddProductResponse;
+import com.task1.ecommerce.dtos.responses.RemoveProductFromStoreResponse;
 import com.task1.ecommerce.dtos.responses.SearchForProductByCategoryResponse;
 import com.task1.ecommerce.dtos.responses.SearchForProductResponse;
 import com.task1.ecommerce.exceptions.ExistingProductException;
+import com.task1.ecommerce.exceptions.ProductNotFoundException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.StoreNotFoundException;
 import com.task1.ecommerce.services.ProductService;
+import org.hibernate.Remove;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class ProductServiceTest {
@@ -77,6 +80,18 @@ public class ProductServiceTest {
         request.setProductCategory(Category.CANDIES);
 
         SearchForProductByCategoryResponse response = productService.getProductByCategory(request);
+        assertThat(response).isNotNull();
+
+    }
+
+    @Test
+    public void testThatAProductCanBeDeletedFromStore() throws ProductNotFoundException, SellerNotFoundException {
+        RemoveProductFromStoreRequest request = new RemoveProductFromStoreRequest();
+        request.setSellerId(1L);
+        request.setStoreId(1L);
+        request.setProductId(1L);
+
+        RemoveProductFromStoreResponse response = productService.removeProductFromStore(request);
         assertThat(response).isNotNull();
 
     }

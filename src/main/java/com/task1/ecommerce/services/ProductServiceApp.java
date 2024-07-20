@@ -4,14 +4,8 @@ import com.task1.ecommerce.data.models.Product;
 import com.task1.ecommerce.data.models.Seller;
 import com.task1.ecommerce.data.models.Store;
 import com.task1.ecommerce.data.repositories.ProductRepository;
-import com.task1.ecommerce.dtos.requests.AddProductRequest;
-import com.task1.ecommerce.dtos.requests.SearchForProductByCategoryRequest;
-import com.task1.ecommerce.dtos.requests.SearchForProductRequest;
-import com.task1.ecommerce.dtos.requests.UpdateProductRequest;
-import com.task1.ecommerce.dtos.responses.AddProductResponse;
-import com.task1.ecommerce.dtos.responses.SearchForProductByCategoryResponse;
-import com.task1.ecommerce.dtos.responses.SearchForProductResponse;
-import com.task1.ecommerce.dtos.responses.UpdateProductResponse;
+import com.task1.ecommerce.dtos.requests.*;
+import com.task1.ecommerce.dtos.responses.*;
 import com.task1.ecommerce.exceptions.ExistingProductException;
 import com.task1.ecommerce.exceptions.ProductNotFoundException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
@@ -92,6 +86,29 @@ public class ProductServiceApp implements ProductService{
         response.setProducts(products);
         return response;
 
+    }
+
+    @Override
+    public RemoveProductFromStoreResponse removeProductFromStore(RemoveProductFromStoreRequest request) throws SellerNotFoundException, ProductNotFoundException {
+        Seller existingSeller = sellerService.findSellerbyId(request.getSellerId());
+        if (existingSeller == null) throw new SellerNotFoundException("Seller not found");
+
+        List<Store> existingSellerStores = existingSeller.getStores();
+
+        Store targetStore = storeService.findById(request.getStoreId());
+        List<Product> existingProductsInStore = targetStore.getProducts();
+        Product targetProduct = productRepository.findById(request.getProductId()).orElse(null);
+        if (targetProduct == null) throw new ProductNotFoundException("Product not found");
+
+        existingProductsInStore.remove(targetProduct);
+        targetStore.setProducts(existingProductsInStore);
+        storeService.save(existingSellerStores);
+        existingSeller.setStores(existingSellerStores);
+        sellerService.save(existingSeller);
+
+        RemoveProductFromStoreResponse response = new RemoveProductFromStoreResponse();
+        response.setMessage("Product : " + targetProduct.getId() + " removed from the store.");
+        return response;
     }
 
     private static UpdateProductResponse buildProductUpdateResponse(Product targetProduct) {
