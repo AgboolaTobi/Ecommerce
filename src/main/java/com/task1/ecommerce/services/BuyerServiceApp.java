@@ -223,6 +223,7 @@ public class BuyerServiceApp implements BuyerService{
         buyer.setPassword(request.getPassword());
         buyer.setAddress(request.getAddress());
         buyer.setPhoneNumber(request.getPhoneNumber());
+        buyer.setCreatedAt(LocalDateTime.now());
         return buyer;
     }
 
