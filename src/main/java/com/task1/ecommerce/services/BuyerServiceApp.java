@@ -216,9 +216,9 @@ public class BuyerServiceApp implements BuyerService{
     }
 
     private static Buyer createBuyer(BuyerRegistrationRequest request) throws BuyerRegistrationException {
-        if (!Verification.verifyEmail(request.getEmail())) throw new BuyerRegistrationException("Invalid email format: " + request.getEmail());
-        if (!Verification.verifyPassword(request.getPassword())) throw new BuyerRegistrationException("Invalid password format: " + request.getPassword());
-        if (!Verification.verifyName(request.getName())) throw new BuyerRegistrationException("Invalid name format: " + request.getName());
+        if (Verification.verifyRegistrationEmail(request.getEmail())) throw new BuyerRegistrationException("Invalid email format: " + request.getEmail());
+        if (Verification.verifyRegistrationPassword(request.getPassword())) throw new BuyerRegistrationException("Invalid password format: " + request.getPassword());
+        if (Verification.verifyRegistrationName(request.getName())) throw new BuyerRegistrationException("Invalid name format: " + request.getName());
         Buyer buyer = new Buyer();
         buyer.setEmail(request.getEmail());
         buyer.setName(request.getName());

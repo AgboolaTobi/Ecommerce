@@ -160,13 +160,13 @@ public class SellerServiceApp implements SellerService{
 
 
     private static void verifyDetails(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
-        if (!Verification.verifyEmail(request.getEmail())) throw new SellerRegistrationException("Invalid email format. Format should follow abdc@gmail.com format" + request.getEmail());
-        if (!Verification.verifyName(request.getName())) throw new SellerRegistrationException("Invalid name format: " + request.getName() + ". Name should contain letters and spaces only");
+        if (Verification.verifyRegistrationEmail(request.getEmail())) throw new SellerRegistrationException("Invalid email format. Format should follow abdc@gmail.com format" + request.getEmail());
+        if (Verification.verifyRegistrationName(request.getName())) throw new SellerRegistrationException("Invalid name format: " + request.getName() + ". Name should contain letters and spaces only");
         if (!Verification.verifyPhoneNumber(request.getPassword())) throw new SellerRegistrationException("""
                 1. Phone number should contain a 11 numbers(numbers only)
                 2. No whitespaces in-between the numbers
                 """);
-        if (!Verification.verifyPassword(request.getPassword())) throw new SellerRegistrationException("""
+        if (Verification.verifyRegistrationPassword(request.getPassword())) throw new SellerRegistrationException("""
                 Invalid password format:
                 1. Password must start with an uppercase
                 2. Password must contain a special character
