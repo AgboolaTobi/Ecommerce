@@ -12,7 +12,6 @@ import com.task1.ecommerce.dtos.responses.OpenMultipleSellerStoresResponse;
 import com.task1.ecommerce.dtos.responses.SellerLoginResponse;
 import com.task1.ecommerce.dtos.responses.SellerLogoutResponse;
 import com.task1.ecommerce.dtos.responses.SellerRegistrationResponse;
-import com.task1.ecommerce.exceptions.InvalidPhoneNumberException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.SellerRegistrationException;
 import com.task1.ecommerce.utils.Verification;
@@ -34,7 +33,7 @@ public class SellerServiceApp implements SellerService{
     private final StoreService storeService;
 
     @Override
-    public SellerRegistrationResponse registerSeller(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
+    public SellerRegistrationResponse registerSeller(SellerRegistrationRequest request) throws SellerRegistrationException {
         checkIfRegistered(request);
         Seller newSeller = createSeller(request);
         Store sellerStore = createSellerStore(request, newSeller);
@@ -148,7 +147,7 @@ public class SellerServiceApp implements SellerService{
         sellerStore.setProducts(products);
     }
 
-    private Seller createSeller(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
+    private Seller createSeller(SellerRegistrationRequest request) throws SellerRegistrationException {
         verifyDetails(request);
         Seller newSeller = mapper.map(request, Seller.class);
         newSeller.setCreatedAt(LocalDate.now());
@@ -159,19 +158,37 @@ public class SellerServiceApp implements SellerService{
 
 
 
-    private static void verifyDetails(SellerRegistrationRequest request) throws SellerRegistrationException, InvalidPhoneNumberException {
-        if (Verification.verifyRegistrationEmail(request.getEmail())) throw new SellerRegistrationException("Invalid email format. Format should follow abdc@gmail.com format" + request.getEmail());
-        if (Verification.verifyRegistrationName(request.getName())) throw new SellerRegistrationException("Invalid name format: " + request.getName() + ". Name should contain letters and spaces only");
-        if (!Verification.verifyPhoneNumber(request.getPassword())) throw new SellerRegistrationException("""
-                1. Phone number should contain a 11 numbers(numbers only)
-                2. No whitespaces in-between the numbers
-                """);
-        if (Verification.verifyRegistrationPassword(request.getPassword())) throw new SellerRegistrationException("""
-                Invalid password format:
-                1. Password must start with an uppercase
-                2. Password must contain a special character
-                """);
+    private static void verifyDetails(SellerRegistrationRequest request) throws SellerRegistrationException {
+        if (!Verification.verifyRegistrationEmail(request.getEmail()))
+            throw new SellerRegistrationException("Invalid email format. Email should be in the format of example@gmail.com");
+
+        if (!Verification.verifyRegistrationName(request.getName()))
+            throw new SellerRegistrationException("Invalid name format: " + request.getName() + ". Name should contain letters and spaces only");
+
+        if (!Verification.verifyPhoneNumber(request.getPhoneNumber()))
+            throw new SellerRegistrationException("Invalid phone number format. Phone number should contain 11 digits only, without whitespaces");
+
+        if (!Verification.verifyRegistrationPassword(request.getPassword()))
+            throw new SellerRegistrationException(""" 
+            Invalid password format. Ensure password has:
+            - A minimum length of 8 characters and a maximum length of 16 characters
+            - No whitespaces
+            - A mix of:
+              - Lowercase letters (a-z)
+              - Uppercase letters (A-Z)
+              - Digits (0-9)
+              - Special characters (@, $, !, %, *, ?, &)
+        """);
+
+        if (!Verification.verifyStoreName(request.getStoreName()))
+            throw new SellerRegistrationException("Invalid store name format. Store name should contain letters, numbers, and spaces only, with a minimum length of 3 and a maximum length of 50");
+
+        if (!Verification.verifyStoreDescription(request.getStoreDescription()))
+            throw new SellerRegistrationException("Invalid store description format. Store description should contain letters, numbers, and spaces only, with a minimum length of 10 and a maximum length of 200");
     }
+
+
+
 
     private void checkIfRegistered(SellerRegistrationRequest request) throws SellerRegistrationException {
         boolean isRegistered = sellerRepository.findByEmail(request.getEmail()) != null;
