@@ -14,7 +14,6 @@ import com.task1.ecommerce.exceptions.ProductNotFoundException;
 import com.task1.ecommerce.exceptions.SellerNotFoundException;
 import com.task1.ecommerce.exceptions.StoreNotFoundException;
 import com.task1.ecommerce.services.ProductService;
-import org.hibernate.Remove;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +31,7 @@ public class ProductServiceTest {
     public void testThatProductCanBeAddedToSellerStore() throws StoreNotFoundException,
             SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
-        request.setSellerEmail("tobi4tee@email.com");
+        request.setSellerEmail("tobi9tee@gmail.com");
         request.setStoreId(1L);
         request.setCategory(Category.CANDIES);
         request.setName("Sweets");
@@ -49,13 +48,30 @@ public class ProductServiceTest {
     public void testThatASellerCanAddMultipleProducts() throws StoreNotFoundException,
             SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
-        request.setSellerEmail("tobi4tee@email.com");
-        request.setStoreId(2L);
+        request.setSellerEmail("tobi9tee@gmail.com");
+        request.setStoreId(3L);
         request.setCategory(Category.PHARMACY_ITEMS);
         request.setName("Antibiotics");
         request.setDescription("Antibiotics for all age group. Different brands in stock");
         request.setPrice(new BigDecimal(500));
         request.setQuantity(55);
+        AddProductResponse response = productService.addProduct(request);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+    }
+
+
+    @Test
+    public void testThatASellerCanAddMultipleProducts2() throws StoreNotFoundException,
+            SellerNotFoundException, ExistingProductException {
+        AddProductRequest request = new AddProductRequest();
+        request.setSellerEmail("tobi9tee@gmail.com");
+        request.setStoreId(3L);
+        request.setCategory(Category.FOODS_ITEMS);
+        request.setName("White Garri");
+        request.setDescription("Your place for different range and varieties of food items...");
+        request.setPrice(new BigDecimal(300));
+        request.setQuantity(30);
         AddProductResponse response = productService.addProduct(request);
         System.out.println(response);
         assertThat(response).isNotNull();

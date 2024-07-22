@@ -31,12 +31,12 @@ public class SellerServiceTest {
     @Test
     public void testThatASellerCanRegister() throws SellerRegistrationException, InvalidPhoneNumberException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
-        request.setEmail("test@email.com");
-        request.setPassword("password");
-        request.setName("Test Name");
-        request.setStoreName("Test Store");
-        request.setStoreDescription("Test Store Description");
-
+        request.setEmail("tobi9tee@gmail.com");
+        request.setPassword("tobi4Me$");
+        request.setName("Agboola Tobi");
+        request.setPhoneNumber("08139031085");
+        request.setStoreName("Grace Stores");
+        request.setStoreDescription("Your best place to get all kinds of sweet candies");
         SellerRegistrationResponse response = sellerService.registerSeller(request);
         assertThat(response).isNotNull();
     }
@@ -45,11 +45,11 @@ public class SellerServiceTest {
     @Test
     public void testThatMultipleSellersCanRegister() throws SellerRegistrationException, InvalidPhoneNumberException {
         SellerRegistrationRequest request = new SellerRegistrationRequest();
-        request.setEmail("tobi9tee@gmail.com");
-        request.setPassword("tobi4Me$");
-        request.setName("Agboola Tobi");
-        request.setPhoneNumber("08139031085");
-        request.setStoreName("Grace Stores");
+        request.setEmail("lanlehintife@gmail.com");
+        request.setPassword("$Tifegrace04");
+        request.setName("Lanlehin Tife");
+        request.setPhoneNumber("08068952954");
+        request.setStoreName("Tifeh Stores");
         request.setStoreDescription("Your best place to get all kinds of sweet candies");
 
         SellerRegistrationResponse response = sellerService.registerSeller(request);
@@ -100,6 +100,16 @@ public class SellerServiceTest {
     }
 
     @Test
+    public void testThatMultipleRegisteredSellersCanSellerLogin() throws SellerNotFoundException, InvalidCredentialsException {
+        SellerLoginRequest request = new SellerLoginRequest();
+        request.setEmail("lanlehintife@gmail.com");
+        request.setPassword("$Tifegrace04");
+
+        SellerLoginResponse response = sellerService.sellerLogin(request);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
     public void testThatSellerCanLogout() throws SellerNotFoundException {
 
         SellerLogoutRequest request = new SellerLogoutRequest();
@@ -113,7 +123,7 @@ public class SellerServiceTest {
     @Test
     public void testThatASellerCanHaveMultipleStores() throws SellerNotFoundException {
         OpenMultipleSellerStoresRequest request = new OpenMultipleSellerStoresRequest();
-        request.setSellerEmail("tobi4tee@email.com");
+        request.setSellerEmail("tobi9tee@gmail.com");
         request.setSellerId(1L);
         request.setStoreName("HisGrace Pharmacy");
         request.setStoreDescription("HisGrace Pharmacy sells all kinds of pharmaceutical drugs");

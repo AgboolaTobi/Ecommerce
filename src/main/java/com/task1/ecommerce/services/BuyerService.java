@@ -21,4 +21,6 @@ public interface BuyerService {
     BuyerLoginResponse buyerLogin(BuyerLoginRequest request) throws BuyerNotFoundException, InvalidCredentialsException;
 
     BuyerLogoutResponse logoutBuyer(BuyerLogoutRequest request) throws BuyerNotFoundException;
+
+    RemoveProductFromCartResponse removeProductFromCart(RemoveProductFromCartRequest request) throws BuyerNotFoundException, CartItemException;
 }

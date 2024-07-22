@@ -10,4 +10,6 @@ public interface CartItemService {
     void save(CartItem cartItem);
 
     List<CartItem> findByProductId(Long id);
+
+    void deleteProduct(CartItem targetCartItem);
 }

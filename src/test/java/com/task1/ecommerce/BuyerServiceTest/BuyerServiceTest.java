@@ -66,7 +66,7 @@ public class BuyerServiceTest {
         AddToCartRequest request = new AddToCartRequest();
         request.setBuyerId(1L);
         request.setProductId(1L);
-        request.setQuantity(2);
+        request.setQuantity(3);
 
         AddToCartResponse response = buyerService.addProductToCart(request);
         assertThat(response).isNotNull();
@@ -78,7 +78,7 @@ public class BuyerServiceTest {
         AddToCartRequest request = new AddToCartRequest();
         request.setBuyerId(1L);
         request.setProductId(1L);
-        request.setQuantity(3);
+        request.setQuantity(2);
 
         AddToCartResponse response = buyerService.addProductToCart(request);
         assertThat(response).isNotNull();
@@ -91,6 +91,18 @@ public class BuyerServiceTest {
         request.setBuyerId(1L);
         request.setProductId(2L);
         request.setQuantity(1);
+
+        AddToCartResponse response = buyerService.addProductToCart(request);
+        assertThat(response).isNotNull();
+    }
+
+
+    @Test
+    public void testThatABuyerCanAddMultipleProductsToCart2() throws BuyerNotFoundException, ProductNotFoundException {
+        AddToCartRequest request = new AddToCartRequest();
+        request.setBuyerId(1L);
+        request.setProductId(3L);
+        request.setQuantity(5);
 
         AddToCartResponse response = buyerService.addProductToCart(request);
         assertThat(response).isNotNull();
@@ -115,9 +127,19 @@ public class BuyerServiceTest {
         request.setBuyerId(2L);
         request.setProductId(2L);
         request.setQuantity(1);
-
         AddToCartResponse response = buyerService.addProductToCart(request);
         assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void testThatABuyerCanRemoveProductFromCart() throws CartItemException, BuyerNotFoundException {
+        RemoveProductFromCartRequest request = new RemoveProductFromCartRequest();
+        request.setBuyerId(2L);
+        request.setProductId(1L);
+        request.setQuantity(1);
+        RemoveProductFromCartResponse response = buyerService.removeProductFromCart(request);
+        assertThat(response).isNotNull();
+
     }
 
 

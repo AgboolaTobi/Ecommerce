@@ -24,4 +24,9 @@ public class CartItemServiceApp implements CartItemService{
     public List<CartItem> findByProductId(Long id) {
         return new ArrayList<>(cartItemRepository.findAll());
     }
+
+    @Override
+    public void deleteProduct(CartItem targetCartItem) {
+        cartItemRepository.delete(targetCartItem);
+    }
 }

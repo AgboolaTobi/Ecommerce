@@ -48,58 +48,62 @@ public class BuyerServiceApp implements BuyerService{
 
 
     }
-
     @Override
     public AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException, ProductNotFoundException {
         Buyer existingBuyer = existingBuyer(request);
         Product existingProduct = existingProduct(request);
         checkQuantity(request, existingProduct);
         Cart cart = existingBuyer.getCart();
-
-
         List<CartItem> buyersItems = cart.getItems();
 
-        List<CartItem> existingCartItems = cartItemService.findByProductId(existingProduct.getId());
-
-        CartItem cartItem;
-        if (!existingCartItems.isEmpty()) {
-
-            cartItem = existingCartItems.get(0);
-            int newQuantity = cartItem.getQuantity() + request.getQuantity();
-            BigDecimal newPrice = cartItem.getPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
-            cartItem.setQuantity(newQuantity);
-            cartItem.setPrice(newPrice);
-            cartItem.setProduct(cartItem.getProduct());
-            cartItemService.save(cartItem);
-        } else {
-
-            cartItem = new CartItem();
-            cartItem.setBuyerId(existingBuyer.getId());
-            cartItem.setProduct(existingProduct);
-            cartItem.setQuantity(request.getQuantity());
-            cartItem.setCart(cart);
-            cartItem.setPrice(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
-            cartItemService.save(cartItem);
+        for (CartItem existingCartItem : buyersItems) {
+            if (existingCartItem.getProduct().getId().equals(existingProduct.getId())) {
+                // Item already exists in cart, update quantity
+                existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
+                existingCartItem.setPrice(existingProduct.getPrice().multiply(BigDecimal.valueOf(existingCartItem.getQuantity())));
+                cartItemService.save(existingCartItem);
+                cart.setTotalQuantity(cart.getTotalQuantity() + request.getQuantity());
+                cart.setTotalPrice(cart.getTotalPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))));
+                cartService.save(cart);
+                existingProduct.setQuantity(existingProduct.getQuantity() - request.getQuantity());
+                productService.saveProduct(existingProduct);
+                return buildAddToCartResponse();
+            }
         }
 
+        // Item not found in cart, create new cart item
+        CartItem cartItem = new CartItem();
+        cartItem.setProduct(existingProduct);
+        cartItem.setQuantity(request.getQuantity());
+        cartItem.setCart(cart);
+        cartItem.setPrice(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+        cartItem.setBuyer(existingBuyer);
+        cartItemService.save(cartItem);
+
         buyersItems.add(cartItem);
-
-        // Update cart totals
         cart.setItems(buyersItems);
+
+        // Update total price
+        BigDecimal currentTotalPrice = BigDecimal.ZERO;
+        for (CartItem item : buyersItems) {
+            currentTotalPrice = currentTotalPrice.add(item.getPrice());
+        }
+        cart.setTotalPrice(currentTotalPrice);
+
         cart.setTotalQuantity(cart.getTotalQuantity() + request.getQuantity());
-        cart.setTotalPrice(cart.getTotalPrice().add(existingProduct.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))));
-
         cartService.save(cart);
-
-
         existingProduct.setQuantity(existingProduct.getQuantity() - request.getQuantity());
         productService.saveProduct(existingProduct);
-
         existingBuyer.setCart(cart);
         buyerRepository.save(existingBuyer);
-
         return buildAddToCartResponse();
     }
+
+
+
+
+
+
 
 
 
@@ -190,6 +194,47 @@ public class BuyerServiceApp implements BuyerService{
         buyerRepository.save(existingBuyer);
 
         return buildBuyerLogoutResponse();
+    }
+
+    @Override
+    public RemoveProductFromCartResponse removeProductFromCart(RemoveProductFromCartRequest request) throws BuyerNotFoundException, CartItemException {
+        Buyer existingBuyer = getExistingBuyer(request);
+        Cart cart = existingBuyer.getCart();
+        List<CartItem> items = cart.getItems();
+        List<CartItem> cartItems = cartItemService.findByProductId(request.getProductId());
+        if (cartItems == null) throw new CartItemException("Cart is empty. Kindly add products to your cart");
+        CartItem targetCartItem = cartItems.get(0);
+        int quantityToRemove = request.getQuantity();
+
+            Product product = productService.getProductById(request.getProductId());
+            product.setQuantity(product.getQuantity() + quantityToRemove);
+            productService.saveProduct(product);
+
+            if (quantityToRemove >= targetCartItem.getQuantity())
+                items.remove(targetCartItem);
+            cartItemService.deleteProduct(targetCartItem);
+
+            targetCartItem.setQuantity(targetCartItem.getQuantity() - quantityToRemove);
+            cartItemService.save(targetCartItem);
+
+            cart.setTotalQuantity(cart.getTotalQuantity() - quantityToRemove);
+            cart.setTotalPrice(cart.getTotalPrice().subtract(targetCartItem.getPrice().multiply(BigDecimal.valueOf(quantityToRemove))));
+            cartService.save(cart);
+
+
+            RemoveProductFromCartResponse response = new RemoveProductFromCartResponse();
+            response.setMessage("Product removed from cart successfully");
+
+            return response;
+
+
+
+    }
+
+    private Buyer getExistingBuyer(RemoveProductFromCartRequest request) throws BuyerNotFoundException {
+        Buyer existingBuyer = buyerRepository.findById(request.getBuyerId()).orElse(null);
+        if (existingBuyer == null) throw new BuyerNotFoundException("Buyer not found");
+        return existingBuyer;
     }
 
     private static BuyerLogoutResponse buildBuyerLogoutResponse() {
