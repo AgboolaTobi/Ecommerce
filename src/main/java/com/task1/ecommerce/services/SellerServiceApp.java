@@ -88,7 +88,7 @@ public class SellerServiceApp implements SellerService{
     }
 
     @Override
-    public Seller findSellerbyId(Long sellerId) {
+    public Seller findSellerById(Long sellerId) {
         return sellerRepository.getSellerById(sellerId);
     }
 

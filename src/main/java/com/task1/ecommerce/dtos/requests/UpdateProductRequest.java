@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class UpdateProductRequest {
-    private String sellerEmail;
+//    private String sellerEmail;
+    private Long sellerId;
     private Long storeId;
     private Long productId;
     private String productName;

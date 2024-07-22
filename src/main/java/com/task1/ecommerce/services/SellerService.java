@@ -27,5 +27,5 @@ public interface SellerService {
 
     SellerLogoutResponse sellerLogout(SellerLogoutRequest request) throws SellerNotFoundException;
 
-    Seller findSellerbyId(Long sellerId);
+    Seller findSellerById(Long sellerId);
 }

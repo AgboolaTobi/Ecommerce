@@ -31,7 +31,8 @@ public class ProductServiceTest {
     public void testThatProductCanBeAddedToSellerStore() throws StoreNotFoundException,
             SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
-        request.setSellerEmail("tobi9tee@gmail.com");
+//        request.setSellerEmail("tobi9tee@gmail.com");
+        request.setSellerId(1L);
         request.setStoreId(1L);
         request.setCategory(Category.CANDIES);
         request.setName("Sweets");
@@ -73,6 +74,21 @@ public class ProductServiceTest {
         request.setDescription("Your place for different range and varieties of food items...");
         request.setPrice(new BigDecimal(300));
         request.setQuantity(30);
+        AddProductResponse response = productService.addProduct(request);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void testThatMultipleSellersCanAddProductWithSameNameToTheirStore() throws StoreNotFoundException, ExistingProductException, SellerNotFoundException {
+        AddProductRequest request = new AddProductRequest();
+        request.setSellerId(2L);
+        request.setStoreId(2L);
+        request.setCategory(Category.CANDIES);
+        request.setName("Brown biscuits");
+        request.setDescription("Your place for different range and varieties of candies...");
+        request.setPrice(new BigDecimal(200));
+        request.setQuantity(42);
         AddProductResponse response = productService.addProduct(request);
         System.out.println(response);
         assertThat(response).isNotNull();

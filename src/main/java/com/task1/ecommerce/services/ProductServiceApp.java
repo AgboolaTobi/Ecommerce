@@ -25,7 +25,7 @@ public class ProductServiceApp implements ProductService{
 
     @Override
     public AddProductResponse addProduct(AddProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ExistingProductException {
-        Seller existingSeller = verifySeller(request.getSellerEmail());
+        Seller existingSeller = verifySeller(request.getSellerId());
         List<Store> existingSellerStores = existingSeller.getStores();
         Store targetStore = verifyStore(request.getStoreId());
         List<Product> existingProductsInStore = targetStore.getProducts();
@@ -46,7 +46,7 @@ public class ProductServiceApp implements ProductService{
 
     @Override
     public UpdateProductResponse updateProduct(UpdateProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ProductNotFoundException {
-        Seller existingSeller = verifySeller(request.getSellerEmail());
+        Seller existingSeller = verifySeller(request.getSellerId());
         List<Store> existingSellerStores = existingSeller.getStores();
         Store targetStore = verifyStore(request.getStoreId());
         List<Product> existingProductsInStore = targetStore.getProducts();
@@ -96,7 +96,7 @@ public class ProductServiceApp implements ProductService{
 
     @Override
     public RemoveProductFromStoreResponse removeProductFromStore(RemoveProductFromStoreRequest request) throws SellerNotFoundException, ProductNotFoundException {
-        Seller existingSeller = sellerService.findSellerbyId(request.getSellerId());
+        Seller existingSeller = sellerService.findSellerById(request.getSellerId());
         if (existingSeller == null) throw new SellerNotFoundException("Seller not found");
 
         List<Store> existingSellerStores = existingSeller.getStores();
@@ -144,8 +144,9 @@ public class ProductServiceApp implements ProductService{
         return targetStore;
     }
 
-    private Seller verifySeller(String sellerEmail) throws SellerNotFoundException {
-        Seller existingSeller =sellerService.findByEmail(sellerEmail);
+    private Seller verifySeller(Long sellerId) throws SellerNotFoundException {
+//        Seller existingSeller =sellerService.findByEmail(sellerEmail);
+        Seller existingSeller =sellerService.findSellerById(sellerId);
         if (existingSeller == null) throw new SellerNotFoundException("Invalid Seller details");
         return existingSeller;
     }
