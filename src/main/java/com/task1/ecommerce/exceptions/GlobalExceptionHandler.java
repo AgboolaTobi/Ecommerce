@@ -49,6 +49,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> invalidCredentialsException(InvalidCredentialsException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<String> invalidDataException(InvalidDataException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(InvalidPhoneNumberException.class)
     public ResponseEntity<String> invalidPhoneNumberException(InvalidPhoneNumberException exception){

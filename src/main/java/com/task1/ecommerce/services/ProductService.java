@@ -4,15 +4,12 @@ package com.task1.ecommerce.services;
 import com.task1.ecommerce.data.models.Product;
 import com.task1.ecommerce.dtos.requests.*;
 import com.task1.ecommerce.dtos.responses.*;
-import com.task1.ecommerce.exceptions.ExistingProductException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
-import com.task1.ecommerce.exceptions.SellerNotFoundException;
-import com.task1.ecommerce.exceptions.StoreNotFoundException;
+import com.task1.ecommerce.exceptions.*;
 
 public interface ProductService {
     AddProductResponse addProduct(AddProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ExistingProductException;
 
-    UpdateProductResponse updateProduct(UpdateProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ProductNotFoundException;
+    UpdateProductResponse updateProduct(UpdateProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ProductNotFoundException, InvalidDataException;
 
     Product getProductById(Long productId);
 

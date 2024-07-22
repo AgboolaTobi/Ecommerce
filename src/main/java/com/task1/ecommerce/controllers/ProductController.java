@@ -7,10 +7,7 @@ import com.task1.ecommerce.dtos.requests.UpdateProductRequest;
 import com.task1.ecommerce.dtos.responses.AddProductResponse;
 import com.task1.ecommerce.dtos.responses.SearchForProductByCategoryResponse;
 import com.task1.ecommerce.dtos.responses.UpdateProductResponse;
-import com.task1.ecommerce.exceptions.ExistingProductException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
-import com.task1.ecommerce.exceptions.SellerNotFoundException;
-import com.task1.ecommerce.exceptions.StoreNotFoundException;
+import com.task1.ecommerce.exceptions.*;
 import com.task1.ecommerce.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping("updateProduct")
-    public ResponseEntity<UpdateProductResponse> updateProduct(@RequestBody UpdateProductRequest request) throws StoreNotFoundException, ExistingProductException, SellerNotFoundException, ProductNotFoundException {
+    public ResponseEntity<UpdateProductResponse> updateProduct(@RequestBody UpdateProductRequest request) throws StoreNotFoundException, ExistingProductException, SellerNotFoundException, ProductNotFoundException, InvalidDataException {
         return new ResponseEntity<>(productService.updateProduct(request), HttpStatus.OK);
     }
 

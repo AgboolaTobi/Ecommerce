@@ -6,13 +6,11 @@ import com.task1.ecommerce.data.models.Store;
 import com.task1.ecommerce.data.repositories.ProductRepository;
 import com.task1.ecommerce.dtos.requests.*;
 import com.task1.ecommerce.dtos.responses.*;
-import com.task1.ecommerce.exceptions.ExistingProductException;
-import com.task1.ecommerce.exceptions.ProductNotFoundException;
-import com.task1.ecommerce.exceptions.SellerNotFoundException;
-import com.task1.ecommerce.exceptions.StoreNotFoundException;
+import com.task1.ecommerce.exceptions.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,12 +43,14 @@ public class ProductServiceApp implements ProductService{
 
 
     @Override
-    public UpdateProductResponse updateProduct(UpdateProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ProductNotFoundException {
+    public UpdateProductResponse updateProduct(UpdateProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ProductNotFoundException, InvalidDataException {
         Seller existingSeller = verifySeller(request.getSellerId());
         List<Store> existingSellerStores = existingSeller.getStores();
         Store targetStore = verifyStore(request.getStoreId());
         List<Product> existingProductsInStore = targetStore.getProducts();
         Product targetProduct = verifyProduct(request);
+        if (BigDecimal.ZERO.equals(request.getProductPrice())) throw new InvalidDataException("Product price should not be negative");
+        if (request.getProductQuantity() < 0) throw new InvalidDataException("Product quantity should not be negative");
         createUpdatedProduct(request, targetProduct);
         productRepository.save(targetProduct);
         existingProductsInStore.add(targetProduct);
@@ -124,6 +124,7 @@ public class ProductServiceApp implements ProductService{
     }
 
     private static void createUpdatedProduct(UpdateProductRequest request, Product targetProduct) {
+        targetProduct.setSellerId(request.getSellerId());
         targetProduct.setName(request.getProductName());
         targetProduct.setDescription(request.getProductDescription());
         targetProduct.setProductCategory(request.getCategory());
