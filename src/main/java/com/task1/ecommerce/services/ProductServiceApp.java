@@ -29,14 +29,20 @@ public class ProductServiceApp implements ProductService{
         List<Store> existingSellerStores = existingSeller.getStores();
         Store targetStore = verifyStore(request.getStoreId());
         List<Product> existingProductsInStore = targetStore.getProducts();
-        for (Product existingProduct : existingProductsInStore)
-            if (existingProduct.getName().equals(request.getName())) throw new ExistingProductException("Product already exists");
-        Product newProduct = createProductToAdd(request, existingProductsInStore);
+
+        for (Product existingProduct : existingProductsInStore) {
+            if (existingProduct.getName().equals(request.getName()) && existingProduct.getSellerId().equals(existingSeller.getId())) {
+                throw new ExistingProductException("Product already exists in your store");
+            }
+        }
+
+        Product newProduct = createProductToAdd(request, existingProductsInStore, existingSeller);
         targetStore.setProducts(existingProductsInStore);
         existingSellerStores.add(targetStore);
         storeService.save(existingSellerStores);
         return buildAddProductResponse(newProduct);
     }
+
 
     @Override
     public UpdateProductResponse updateProduct(UpdateProductRequest request) throws SellerNotFoundException, StoreNotFoundException, ProductNotFoundException {
@@ -155,9 +161,10 @@ public class ProductServiceApp implements ProductService{
 
     }
 
-    private static Product createProductToAdd(AddProductRequest request, List<Product> existingProductsInStore) {
+    private static Product createProductToAdd(AddProductRequest request, List<Product> existingProductsInStore, Seller existingSeller) {
         Product newProduct = new Product();
         newProduct.setName(request.getName());
+        newProduct.setSellerId(existingSeller.getId());
         newProduct.setPrice(request.getPrice());
         newProduct.setQuantity(request.getQuantity());
         newProduct.setProductCategory(request.getCategory());

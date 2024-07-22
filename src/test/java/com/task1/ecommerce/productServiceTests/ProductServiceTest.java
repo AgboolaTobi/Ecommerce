@@ -66,6 +66,7 @@ public class ProductServiceTest {
             SellerNotFoundException, ExistingProductException {
         AddProductRequest request = new AddProductRequest();
         request.setSellerEmail("tobi9tee@gmail.com");
+        request.setSellerId(1L);
         request.setStoreId(3L);
         request.setCategory(Category.FOODS_ITEMS);
         request.setName("White Garri");

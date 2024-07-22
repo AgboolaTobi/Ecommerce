@@ -53,10 +53,21 @@ public class BuyerServiceTest {
         BuyerRegistrationRequest request = new BuyerRegistrationRequest();
         request.setEmail("aduke05@gmail.com");
         request.setName("Aduke Agboola");
-        request.setPassword("aduke02");
-        request.setPhoneNumber("+2348068952954");
+        request.setPassword("aduke$Ade02");
+        request.setPhoneNumber("08068952954");
         request.setAddress("Ikoyi, Lagos");
         BuyerRegistrationResponse response = buyerService.registerBuyer(request);
+        assertThat(response).isNotNull();
+    }
+
+
+
+    @Test
+    public void testThatMultipleBuyersCanBuyerLogin() throws BuyerNotFoundException, InvalidCredentialsException {
+        BuyerLoginRequest request = new BuyerLoginRequest();
+        request.setEmail("aduke05@gmail.com");
+        request.setPassword("aduke$Ade02");
+        BuyerLoginResponse response = buyerService.buyerLogin(request);
         assertThat(response).isNotNull();
     }
 
@@ -102,7 +113,7 @@ public class BuyerServiceTest {
         AddToCartRequest request = new AddToCartRequest();
         request.setBuyerId(1L);
         request.setProductId(3L);
-        request.setQuantity(5);
+        request.setQuantity(2);
 
         AddToCartResponse response = buyerService.addProductToCart(request);
         assertThat(response).isNotNull();
@@ -132,9 +143,32 @@ public class BuyerServiceTest {
     }
 
     @Test
+    public void testThatMultipleRegisteredBuyersCanAddMultipleProductsToCart2() throws BuyerNotFoundException, ProductNotFoundException {
+        AddToCartRequest request = new AddToCartRequest();
+        request.setBuyerId(2L);
+        request.setProductId(1L);
+        request.setQuantity(3);
+        AddToCartResponse response = buyerService.addProductToCart(request);
+        assertThat(response).isNotNull();
+    }
+
+
+
+    @Test
     public void testThatABuyerCanRemoveProductFromCart() throws CartItemException, BuyerNotFoundException {
         RemoveProductFromCartRequest request = new RemoveProductFromCartRequest();
         request.setBuyerId(2L);
+        request.setProductId(1L);
+        request.setQuantity(1);
+        RemoveProductFromCartResponse response = buyerService.removeProductFromCart(request);
+        assertThat(response).isNotNull();
+
+    }
+
+    @Test
+    public void testThatMultipleBuyersCanRemoveProductFromCart() throws CartItemException, BuyerNotFoundException {
+        RemoveProductFromCartRequest request = new RemoveProductFromCartRequest();
+        request.setBuyerId(1L);
         request.setProductId(1L);
         request.setQuantity(1);
         RemoveProductFromCartResponse response = buyerService.removeProductFromCart(request);
@@ -155,23 +189,6 @@ public class BuyerServiceTest {
         assertThat(response).isNotNull();
 
     }
-
-    @Test
-    public void testThatMultipleBuyersCanAddProductsToCart() throws BuyerNotFoundException, ProductNotFoundException {
-        AddToCartRequest request = new AddToCartRequest();
-        request.setBuyerId(2L);
-        request.setProductId(1L);
-        request.setQuantity(1);
-
-        AddToCartResponse response = buyerService.addProductToCart(request);
-        assertThat(response).isNotNull();
-    }
-
-//    @Test
-//    public void testThatABuyerCanAddToTheQuantityOfASpecifiedProductInTheCart(){
-//        AddToExistingCartItemsRequest request = new AddToExistingCartItemsRequest();
-//
-//    }
 
 
 }

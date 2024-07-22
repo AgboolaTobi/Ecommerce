@@ -19,6 +19,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+    private Long sellerId;
     private String name;
     private BigDecimal price;
     private String description;

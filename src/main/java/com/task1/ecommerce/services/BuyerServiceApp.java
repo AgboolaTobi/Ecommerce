@@ -202,34 +202,35 @@ public class BuyerServiceApp implements BuyerService{
         Cart cart = existingBuyer.getCart();
         List<CartItem> items = cart.getItems();
         List<CartItem> cartItems = cartItemService.findByProductId(request.getProductId());
-        if (cartItems == null) throw new CartItemException("Cart is empty. Kindly add products to your cart");
+
+        if (cartItems == null)
+            throw new CartItemException("Cart is empty. Kindly add products to your cart");
         CartItem targetCartItem = cartItems.get(0);
         int quantityToRemove = request.getQuantity();
+        Product product = productService.getProductById(request.getProductId());
 
-            Product product = productService.getProductById(request.getProductId());
-            product.setQuantity(product.getQuantity() + quantityToRemove);
-            productService.saveProduct(product);
+        product.setQuantity(product.getQuantity() + quantityToRemove);
+        productService.saveProduct(product);
 
-            if (quantityToRemove >= targetCartItem.getQuantity())
-                items.remove(targetCartItem);
+        if (quantityToRemove >= targetCartItem.getQuantity()) {
+            items.remove(targetCartItem);
             cartItemService.deleteProduct(targetCartItem);
-
+        } else {
             targetCartItem.setQuantity(targetCartItem.getQuantity() - quantityToRemove);
             cartItemService.save(targetCartItem);
+        }
 
-            cart.setTotalQuantity(cart.getTotalQuantity() - quantityToRemove);
-            cart.setTotalPrice(cart.getTotalPrice().subtract(targetCartItem.getPrice().multiply(BigDecimal.valueOf(quantityToRemove))));
-            cartService.save(cart);
+        BigDecimal priceToRemove = product.getPrice().multiply(BigDecimal.valueOf(quantityToRemove));
+        cart.setTotalQuantity(cart.getTotalQuantity() - quantityToRemove);
+        cart.setTotalPrice(cart.getTotalPrice().subtract(priceToRemove));
+        cartService.save(cart);
 
-
-            RemoveProductFromCartResponse response = new RemoveProductFromCartResponse();
-            response.setMessage("Product removed from cart successfully");
-
-            return response;
-
-
-
+        RemoveProductFromCartResponse response = new RemoveProductFromCartResponse();
+        response.setMessage("Product removed from cart successfully");
+        return response;
     }
+
+
 
     private Buyer getExistingBuyer(RemoveProductFromCartRequest request) throws BuyerNotFoundException {
         Buyer existingBuyer = buyerRepository.findById(request.getBuyerId()).orElse(null);
