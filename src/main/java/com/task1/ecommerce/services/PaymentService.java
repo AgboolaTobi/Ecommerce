@@ -6,5 +6,6 @@ import com.task1.ecommerce.exceptions.BuyerNotFoundException;
 import com.task1.ecommerce.exceptions.OrderNotFoundException;
 
 public interface PaymentService {
-    BuyerPaymentResponse makePayment(BuyerPaymentRequest request) throws BuyerNotFoundException, OrderNotFoundException;
+    BuyerPaymentResponse makePayment(BuyerPaymentRequest request) throws BuyerNotFoundException,
+            OrderNotFoundException;
 }

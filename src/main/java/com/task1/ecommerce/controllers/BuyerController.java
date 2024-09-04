@@ -35,7 +35,7 @@ public class BuyerController {
     }
 
     @PostMapping("removeItemFromCart")
-    public ResponseEntity<RemoveProductFromCartResponse> removeFromCart(@RequestBody RemoveProductFromCartRequest request) throws BuyerNotFoundException, ProductNotFoundException, CartItemException {
+    public ResponseEntity<RemoveProductFromCartResponse> removeFromCart(@RequestBody RemoveProductFromCartRequest request) throws BuyerNotFoundException, CartItemException {
         return new ResponseEntity<>(buyerService.removeProductFromCart(request),HttpStatus.OK);
     }
 

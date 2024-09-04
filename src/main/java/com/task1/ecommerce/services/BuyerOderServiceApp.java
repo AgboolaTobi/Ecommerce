@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+
 public class BuyerOderServiceApp implements BuyerOrderService{
 
     private final BuyerOrderRepository buyerOrderRepository;

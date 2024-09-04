@@ -10,7 +10,8 @@ public interface BuyerService {
     BuyerRegistrationResponse registerBuyer(BuyerRegistrationRequest request) throws BuyerExistException, BuyerRegistrationException;
 
 
-    AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException, ProductNotFoundException;
+    AddToCartResponse addProductToCart(AddToCartRequest request) throws BuyerNotFoundException,
+            ProductNotFoundException;
 
     OrderResponse makeOrder(OrderRequest request) throws BuyerNotFoundException, EmptyCartException;
 

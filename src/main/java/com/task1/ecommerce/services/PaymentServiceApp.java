@@ -47,6 +47,7 @@ public class PaymentServiceApp implements PaymentService{
         Payment payment = new Payment();
         payment.setBuyerId(existingBuyer.getId());
         payment.setOrderId(request.getOrderId());
+        payment.setAmount(targetOrder.getAmount());
         payment.setAmount(request.getAmount());
         payment.setPaymentDate(LocalDateTime.now());
         buyerPayments.add(payment);

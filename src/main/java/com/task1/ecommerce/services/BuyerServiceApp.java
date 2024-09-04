@@ -58,7 +58,9 @@ public class BuyerServiceApp implements BuyerService{
 
         for (CartItem existingCartItem : buyersItems) {
             if (existingCartItem.getProduct().getId().equals(existingProduct.getId())) {
+
                 // Item already exists in cart, update quantity
+
                 existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
                 existingCartItem.setPrice(existingProduct.getPrice().multiply(BigDecimal.valueOf(existingCartItem.getQuantity())));
                 cartItemService.save(existingCartItem);
@@ -72,6 +74,7 @@ public class BuyerServiceApp implements BuyerService{
         }
 
         // Item not found in cart, create new cart item
+
         CartItem cartItem = new CartItem();
         cartItem.setProduct(existingProduct);
         cartItem.setQuantity(request.getQuantity());
@@ -84,6 +87,7 @@ public class BuyerServiceApp implements BuyerService{
         cart.setItems(buyersItems);
 
         // Update total price
+
         BigDecimal currentTotalPrice = BigDecimal.ZERO;
         for (CartItem item : buyersItems) {
             currentTotalPrice = currentTotalPrice.add(item.getPrice());
