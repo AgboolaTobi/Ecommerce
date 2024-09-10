@@ -125,6 +125,18 @@ public class ProductServiceTest {
     }
 
     @Test
+
+    public void testThatProductsCanBeFoundByPrice() throws ProductNotFoundException {
+        SearchForProductByPriceRequest request = new SearchForProductByPriceRequest();
+        request.setProductPrice(BigDecimal.valueOf(500));
+        SearchForProductByPriceResponse response = productService.getProductByPrice(request);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+
+    }
+
+
+    @Test
     public void testThatAProductCanBeDeletedFromStore() throws ProductNotFoundException, SellerNotFoundException {
         RemoveProductFromStoreRequest request = new RemoveProductFromStoreRequest();
         request.setSellerId(1L);
@@ -135,5 +147,6 @@ public class ProductServiceTest {
         assertThat(response).isNotNull();
 
     }
+
 
 }

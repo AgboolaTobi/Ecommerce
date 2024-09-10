@@ -117,6 +117,16 @@ public class ProductServiceApp implements ProductService{
         return response;
     }
 
+    @Override
+    public SearchForProductByPriceResponse getProductByPrice(SearchForProductByPriceRequest request) throws ProductNotFoundException {
+        List<Product> existingProducts = productRepository.getProductByPrice(request.getProductPrice());
+        if (existingProducts == null) throw new ProductNotFoundException("Product not found");
+
+        SearchForProductByPriceResponse response =  new SearchForProductByPriceResponse();
+        response.setProducts(existingProducts);
+        return response;
+    }
+
     private static UpdateProductResponse buildProductUpdateResponse(Product targetProduct) {
         UpdateProductResponse response = new UpdateProductResponse();
         response.setMessage("Product " + targetProduct.getName() + " updated successfully");
