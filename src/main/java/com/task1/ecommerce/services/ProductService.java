@@ -22,4 +22,6 @@ public interface ProductService {
     RemoveProductFromStoreResponse removeProductFromStore(RemoveProductFromStoreRequest request) throws SellerNotFoundException, ProductNotFoundException;
 
     SearchForProductByPriceResponse getProductByPrice(SearchForProductByPriceRequest request) throws ProductNotFoundException;
+
+    ViewAllProductsInStoreResponse viewAllProductsInStore(ViewAllProductsInStoreRequest request) throws SellerNotFoundException;
 }

@@ -87,6 +87,18 @@ public class ProductServiceTest {
     }
 
     @Test
+    public void testThatAListOfProductsInASellersStoreCanBeFound() throws SellerNotFoundException {
+        ViewAllProductsInStoreRequest request = new ViewAllProductsInStoreRequest();
+        request.setSellerId(1L);
+        request.setStoreId(1L);
+
+        ViewAllProductsInStoreResponse response = productService.viewAllProductsInStore(request);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+
+    }
+
+    @Test
     public void testThatMultipleSellersCanAddProductWithSameNameToTheirStore() throws StoreNotFoundException, ExistingProductException, SellerNotFoundException {
         AddProductRequest request = new AddProductRequest();
         request.setSellerId(2L);

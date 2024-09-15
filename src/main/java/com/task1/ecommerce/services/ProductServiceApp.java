@@ -127,6 +127,19 @@ public class ProductServiceApp implements ProductService{
         return response;
     }
 
+    @Override
+    public ViewAllProductsInStoreResponse viewAllProductsInStore(ViewAllProductsInStoreRequest request) throws SellerNotFoundException {
+        Seller existingSeller = sellerService.findSellerById(request.getSellerId());
+        if (existingSeller == null) throw new SellerNotFoundException("Invalid seller details");
+        Store targetStore = storeService.findById(request.getStoreId());
+        List<Product> existingProductsInStore = targetStore.getProducts();
+
+        ViewAllProductsInStoreResponse response = new ViewAllProductsInStoreResponse();
+        response.setProducts(existingProductsInStore);
+        return response;
+
+    }
+
     private static UpdateProductResponse buildProductUpdateResponse(Product targetProduct) {
         UpdateProductResponse response = new UpdateProductResponse();
         response.setMessage("Product " + targetProduct.getName() + " updated successfully");
