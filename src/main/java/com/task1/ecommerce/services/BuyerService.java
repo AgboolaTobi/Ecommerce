@@ -24,4 +24,6 @@ public interface BuyerService {
     BuyerLogoutResponse logoutBuyer(BuyerLogoutRequest request) throws BuyerNotFoundException;
 
     RemoveProductFromCartResponse removeProductFromCart(RemoveProductFromCartRequest request) throws BuyerNotFoundException, CartItemException;
+
+    ViewAllCartItemResponse viewAllCartItems(ViewAllCartItemRequest request) throws BuyerNotFoundException, CartItemException;
 }

@@ -177,6 +177,19 @@ public class BuyerServiceTest {
     }
 
 
+    @Test
+    public void testThatABuyerCanViewTheListOfAllItemsInHisCart() throws BuyerNotFoundException, CartItemException {
+        ViewAllCartItemRequest request = new ViewAllCartItemRequest();
+        request.setBuyerId(1L);
+        request.setCartId(1L);
+
+        ViewAllCartItemResponse response = buyerService.viewAllCartItems(request);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+
+    }
+
+
 
     @Test
     public void testThatABuyerCanMakeAnOrder() throws BuyerNotFoundException, EmptyCartException {

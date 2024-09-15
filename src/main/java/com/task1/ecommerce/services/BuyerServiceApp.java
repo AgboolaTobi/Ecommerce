@@ -234,6 +234,19 @@ public class BuyerServiceApp implements BuyerService{
         return response;
     }
 
+    @Override
+    public ViewAllCartItemResponse viewAllCartItems(ViewAllCartItemRequest request) throws BuyerNotFoundException, CartItemException {
+        Buyer existingBuyer = buyerRepository.findById(request.getBuyerId()).orElse(null);
+        if (existingBuyer == null) throw new BuyerNotFoundException("Invalid buyer details");
+        Cart cart = existingBuyer.getCart();
+        List<CartItem> items = cart.getItems();
+        if (items.isEmpty()) throw new CartItemException("Cart is currently empty");
+        ViewAllCartItemResponse response = new ViewAllCartItemResponse();
+        response.setCartItems(items);
+
+        return response;
+
+    }
 
 
     private Buyer getExistingBuyer(RemoveProductFromCartRequest request) throws BuyerNotFoundException {

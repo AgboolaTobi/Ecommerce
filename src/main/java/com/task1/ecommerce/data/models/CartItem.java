@@ -3,12 +3,14 @@ package com.task1.ecommerce.data.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Setter
 @Getter
 @Entity
+
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +24,15 @@ public class CartItem {
     private Cart cart;
     @ManyToOne
     private Product product;
+
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
+    }
+
 }
